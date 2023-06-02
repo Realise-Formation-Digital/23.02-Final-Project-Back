@@ -1,0 +1,7 @@
+RewriteEngine on
+RewriteRule ^projects/?$ controllers/projectsController.php?%{QUERY_STRING}
+RewriteRule ^projects/([0-9]+)$ controllers/projectsController.php?id=$1&%{QUERY_STRING}
+RewriteRule ^tasks/?$ controllers/tasksController.php?%{QUERY_STRING}
+RewriteRule ^tasks/([0-9]+)$ controllers/tasksController.php?id=$1&%{QUERY_STRING}
+RewriteRule ^users/?$ controllers/usersController.php?%{QUERY_STRING}
+RewriteRule ^users/([0-9]+)$ controllers/usersController.php?id=$1&%{QUERY_STRING}
