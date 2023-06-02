@@ -1,0 +1,41 @@
+<?php
+
+require_once("../models/Project.php");
+require_once("../serializers/projectSerializer.php");
+require_once("./baseController.php");
+
+
+function read(int $id)
+{
+
+}
+
+
+function search(): array
+{
+
+}
+
+
+function create(stdClass $body): array
+{
+
+}
+
+
+function put(int $id, stdClass $body): array
+{
+
+}
+
+function patch(int $id, stdClass $body): array
+{
+
+}
+
+
+function delete(int $id): array
+{
+
+}
+
