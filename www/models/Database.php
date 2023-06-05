@@ -9,10 +9,11 @@ class Database
 {
     protected $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         try {
             $this->pdo = Connection::getConnection();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }
