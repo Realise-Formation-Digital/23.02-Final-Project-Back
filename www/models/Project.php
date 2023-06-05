@@ -1,8 +1,9 @@
 <?php
 
-require_once("../models/Database.php");
+namespace App\Models;
 
-class Project
+class Project extends Database
+
 {
 
 }
