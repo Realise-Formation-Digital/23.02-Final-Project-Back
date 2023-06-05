@@ -79,4 +79,38 @@ class Project extends Database
         $this->copil_list = $copil_list;
     }
 
+    /**
+     * Method which update project, persists in DB and return project object
+     *
+     * @param int $id
+     * @param Project $project
+     * @param array $copil_list
+     * @return Project
+     * @throws Exception
+     */
+    public function update(int $id, Project $project, array $copil_list): Project
+    {
+        try {
+            $this->setId($id);
+            $stmt = $this->pdo->prepare("UPDATE project SET title= :title, status= :status WHERE id= :id");
+            $stmt->execute([
+                "title" => $project->getTitle(),
+                "status" => $project->getStatus(),
+                "id" => $id
+            ]);
+            
+            foreach($copil_list as $pilot){
+                $stmt = $this->pdo->prepare("UPDATE project_user SET user_id= :pilot WHERE project_id= :id");
+                $stmt->execute([
+                    "user_id" => $pilot,
+                    "project_id" => $id
+                ]); 
+            }
+
+            return $project;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
 }
