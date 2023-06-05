@@ -88,7 +88,7 @@ class Project extends Database
      * @return Project
      * @throws Exception
      */
-    public function update(int $id, Project $project, array $copil_list): Project
+    public function update(int $id, Project $project): Project
     {
         try {
             $this->setId($id);
@@ -98,14 +98,6 @@ class Project extends Database
                 "status" => $project->getStatus(),
                 "id" => $id
             ]);
-            
-            foreach($copil_list as $pilot){
-                $stmt = $this->pdo->prepare("UPDATE project_user SET user_id= :pilot WHERE project_id= :id");
-                $stmt->execute([
-                    "user_id" => $pilot,
-                    "project_id" => $id
-                ]); 
-            }
 
             return $project;
         } catch (Exception $e) {

@@ -31,10 +31,10 @@ function create(stdClass $body): array
  * @param  mixed $copil_list
  * @return array
  */
-function put(int $id, stdClass $body, array $copil_list): array
+function put(int $id, stdClass $body): array
 {
     $project = deserializeTask($body);
-    $updateProject = $project->update($id, $project, $copil_list);
+    $updateProject = $project->update($id, $project);
     return serializeTask($updateProject);
 }
 
