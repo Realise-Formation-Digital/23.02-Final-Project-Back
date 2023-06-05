@@ -1,15 +1,10 @@
 <?php
 
-namespace App\controllers;
-
-use App\models\User;
-use App\serializers\userSerializer;
-use baseController;
-
-/*
+require_once("../vendor/autoload.php");
 require_once("../serializers/userSerializer.php");
 require_once("./baseController.php");
-*/
+
+use App\models\User;
 
 function read(int $id)
 {
@@ -20,7 +15,8 @@ function search(): array
 {
    $user = new User();
    $user_data = $user->search_users();
-   $user_tab = deserializeUser($user_data);
+   $user_tab = serializeUser($user_data);
+
    return $user_tab;
 }
 

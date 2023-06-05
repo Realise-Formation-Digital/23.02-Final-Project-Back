@@ -1,17 +1,23 @@
 <?php
 
-namespace App\Models;
+namespace App\models;
 
 use Exception;
 use PDO;
 
 class User extends Database
 {
+   protected $id;
    protected $first_name;
    protected $last_name;
    protected $image;
 
    // GETTER FUNCTIONS
+   public function get_id()
+   {
+      return $this->id;
+   }
+
    public function get_first_name()
    {
       return $this->first_name;
@@ -51,8 +57,9 @@ class User extends Database
          $stmt = $this->pdo->prepare('SELECT * FROM kanban_db.user');
          // execute the statement.
          $stmt->execute();
-         // returns a list of type Class User
-         return $stmt->fetch(PDO::FETCH_CLASS, 'User');
+         // returns a list of type Class User 
+         // $stmt->setFetchMode(PDO::FETCH_CLASS, 'User');
+         return $stmt->fetchAll(PDO::FETCH_CLASS, "App\models\User");
       } catch (Exception $e) {
          // send an error for there was an error with the inserted query
          throw new Exception($e->getMessage());

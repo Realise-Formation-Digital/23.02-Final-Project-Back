@@ -1,20 +1,17 @@
 <?php
 
-function serializeUser($user)
-{
-}
 
-
-function deserializeUser($user)
+function serializeUser(array $users)
 {
+   // dump($users);
    try {
       $userList = [];
-
-      foreach ($user as $usr) {
-         $usr_id = $usr->id;
+      foreach ($users as $usr) {
+         $usr_id = $usr->get_id();
+         dump($usr->get_first_name());
          if (!isset($userList[$usr_id])) {
             $userList[$usr_id] = [
-               "id" => $usr->usr_id,
+               "id" => $usr_id,
                "last_name" => $usr->get_last_name(),
                "first_name" => $usr->get_first_name(),
                "image" => $usr->get_image(),
