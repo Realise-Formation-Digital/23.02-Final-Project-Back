@@ -25,7 +25,7 @@ function create(stdClass $body): array
 
 function put(int $id, stdClass $body): array
 {
-
+    
 }
 
 function patch(int $id, stdClass $body): array
