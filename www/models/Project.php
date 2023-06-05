@@ -74,7 +74,7 @@ class Project extends Database
     /**
      * @param array|null $copil_list
      */
-    public function setCopilList(?string $copil_list): void
+    public function setCopilList(array $copil_list): void
     {
         $this->copil_list = $copil_list;
     }

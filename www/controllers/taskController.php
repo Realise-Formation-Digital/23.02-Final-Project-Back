@@ -30,6 +30,13 @@ function create(stdClass $body): array
 }
 
 
+/**
+ * update une tache
+ *
+ * @param  mixed $id
+ * @param  mixed $body
+ * @return array
+ */
 function put(int $id,stdClass $body): array
 {
     $task = deserializeTask($body);
