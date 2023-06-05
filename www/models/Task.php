@@ -3,6 +3,7 @@
 namespace App\models;
 
 use Exception;
+use PDO;
 
 class Task extends Database
 {
@@ -126,8 +127,20 @@ class Task extends Database
      */
     public function patch(int $id, int $status_column_id){
         try{
-            $stmt = $this->pdo->prepare("UPDATE task (status_column_id) VALUES (:status_column_id) WHERE id = :id");
-            $stmt->execute ([
+            /**/
+            $stmtFetch = $this->pdo->prepare("SELECT * FROM task WHERE id=:id");
+            $stmtFetch-> execute([
+                "id" => $id,
+            ]);
+
+            $task = $stmtFetch->fetch(PDO::FETCH_OBJ);
+
+            if(!$task==true){
+                throw new Exception('Cette tache nexiste pas', 400);
+            }
+
+            $stmtUpdate = $this->pdo->prepare("UPDATE task SET status_column_id=:status_column_id WHERE id = :id");
+            $stmtUpdate->execute ([
                 "id" => $id,
                 "status_column_id" =>$status_column_id
             ]);
