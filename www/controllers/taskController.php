@@ -4,7 +4,7 @@ require_once("../vendor/autoload.php");
 require_once("../serializers/taskSerializer.php");
 require_once("./baseController.php");
 
-use App\Models\Task;
+use App\models\Task;
 
 
 function read(int $id)
@@ -30,9 +30,11 @@ function create(stdClass $body): array
 }
 
 
-function put(int $id, stdClass $body): array
+function put(int $id,stdClass $body): array
 {
-
+    $task = deserializeTask($body);
+    $updateTask = $task->update($id, $task);
+    return serializeTask($updateTask);
 }
 
 function patch(int $id, stdClass $body): array

@@ -23,7 +23,7 @@ try {
     $body = isset($body) ? $body : '';
 
     // Appel des méthodes souhaitées.
-    switch($method) {
+    switch ($method) {
         case 'GET':
             if ($id) {
                 $result = read($id);
@@ -46,8 +46,7 @@ try {
     }
 
     echo json_encode($result);
-
-} catch(Exception $e) {
+} catch (Exception $e) {
 
     // convert string code error from PDO in 500 error
     if (gettype($e->getCode()) == "string") {
