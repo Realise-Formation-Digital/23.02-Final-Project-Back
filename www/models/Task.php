@@ -156,6 +156,7 @@ class Task extends Database
     public function update(int $id, Task $task): Task
     {
         try {
+            $this->setId($id);
             $stmt = $this->pdo->prepare("UPDATE task SET title= :title, description= :description, start_date= :start_date, end_date= :end_date, sector= :sector, status_column_id= :status_column_id, user_id= :user_id WHERE id= :id");
             $stmt->execute([
                 "title" => $task->getTitle(),
