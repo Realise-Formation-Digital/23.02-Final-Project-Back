@@ -1,7 +1,8 @@
 <?php
 
-require_once("../models/Database.php");
-class StatusColumn
+namespace App\Models;
+
+class StatusColumn extends Database
 {
 
 }
