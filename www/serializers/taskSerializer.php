@@ -2,7 +2,7 @@
 
 require_once("../vendor/autoload.php");
 
-use App\Models\Task;
+use App\models\Task;
 
 /**
  * Function which serializes task
@@ -32,7 +32,8 @@ function serializeTask(Task $task): array
 function deserializeTask(stdClass $body): Task
 {
     $task = new Task();
-
+    dump($task);
+    
     if (!empty($body->title)) {
         $task->setTitle($body->title);
 
@@ -89,4 +90,5 @@ function test_date(string $date): void {
         throw new Exception("La date doit être valide et au format YYYY-MM-DD. Exemple: 2023-06-05", 400);
     }
 }
+
 

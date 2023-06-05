@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\models;
 
-use App\Db\Connection;
+use App\db\Connection;
 use Exception;
 
 class Database
