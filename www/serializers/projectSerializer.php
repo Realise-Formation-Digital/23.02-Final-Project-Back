@@ -1,7 +1,15 @@
 <?php
 
-function serializeProject(Project $project): array
+use App\models\Project;
+
+function serializeProjectById(Project $project): array
 {
+    dump($project);
+    $status_columns = [];
+    foreach ($project->getStatusColumns() as $statusColumn) {
+
+    }
+    return [];
 }
 
 

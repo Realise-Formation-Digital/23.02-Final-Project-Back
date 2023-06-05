@@ -2,8 +2,10 @@
 
 namespace App\models;
 
+use AllowDynamicProperties;
 use Exception;
 
+#[AllowDynamicProperties]
 class Task extends Database
 {
     private ?int $id;
