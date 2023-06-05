@@ -4,6 +4,7 @@ namespace App\models;
 
 use AllowDynamicProperties;
 use Exception;
+use PDO;
 
 #[AllowDynamicProperties]
 class Task extends Database
@@ -116,6 +117,42 @@ class Task extends Database
         $this->sector = $sector;
     }
 
+
+
+
+    /**
+     * Method that add task
+     * 
+     * @param int $id
+     * @param int $status_column_id
+     * @throws Exception
+     */
+    public function patch(int $id, int $status_column_id){
+        try{
+            /**/
+            $stmtFetch = $this->pdo->prepare("SELECT * FROM task WHERE id=:id");
+            $stmtFetch-> execute([
+                "id" => $id,
+            ]);
+
+            $task = $stmtFetch->fetch(PDO::FETCH_OBJ);
+
+            if(!$task==true){
+                throw new Exception('Cette tache nexiste pas', 400);
+            }
+
+            $stmtUpdate = $this->pdo->prepare("UPDATE task SET status_column_id=:status_column_id WHERE id = :id");
+            $stmtUpdate->execute ([
+                "id" => $id,
+                "status_column_id" =>$status_column_id
+            ]);
+        }catch (Exception $e){
+            throw $e;
+        }
+    }
+
+
+
     /**
      * Method which creates task, persists in DB and return task object
      *
@@ -175,6 +212,23 @@ class Task extends Database
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    /**
+     * delete task
+     * @param string $id
+     */
+    public function delete($id){
+        try{  
+
+            $stmt = $this->pdo->prepare("DELETE FROM task WHERE id=?");
+            $stmt->execute([$id]);
+            return ["message" => "La tache a été correctement supprimée"];
+        }catch(Exception $e) {
+            throw $e;
+        }
+        
+    
     }
 }
 

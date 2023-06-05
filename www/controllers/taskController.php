@@ -38,13 +38,27 @@ function put(int $id,stdClass $body): array
 }
 
 function patch(int $id, stdClass $body): array
-{
-
+{ 
+    $task = new Task();
+    //check if id of body task exist 
+    if (!empty($body->new_status_column_id)) {
+        //must be integer, if yes create new status column id
+        if (gettype($body->new_status_column_id) == "integer") {
+            $task->patch($id, $body->new_status_column_id);
+        } else {
+            throw new Exception("L'id de la colonne status doit être un nombre entier.", 400);
+        }
+        
+    } else {
+        throw new Exception("L'id de la colonne status est obligatoire.", 400);
+    }    
 }
 
 
-function delete(int $id): array
-{
+function delete(int $id): array{
+        $task = new Task();
+        $deleteTask = $task->delete($id);
+        return $deleteTask;
+    }
 
-}
 
