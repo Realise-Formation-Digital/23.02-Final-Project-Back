@@ -144,4 +144,15 @@ class Task extends Database
             throw $e;
         }
     }
+
+    /**
+     * delete task
+     * @param int $id
+     */
+    public function delete(int $id)
+    {
+        return $this -> delete("DELETE FROM kanban_db.tasks where id=$id",
+        "SELECT id FROM kanban_db.tasks WHERE id=$id");
+    
+    }
 }
