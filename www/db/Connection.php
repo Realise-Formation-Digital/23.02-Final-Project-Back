@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Db;
+
+use Exception;
+use PDO;
+
 require_once("../config.php");
 
 class Connection
