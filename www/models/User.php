@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Database;
+
 require_once("../models/Database.php");
 
-class User
+class User extends Database
 {
 
 }
