@@ -71,7 +71,11 @@ function deserializeTask(stdClass $body): Task
         throw new Exception("La date de fin ne peut pas être nulle.", 400);
     }
 
-    $task->setSector($body->sector);
+    if (!empty($body->sector)) {
+        $task->setSector($body->sector);
+    } else {
+        $task->setSector(null);
+    }
 
     return $task;
 }
