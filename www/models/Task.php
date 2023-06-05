@@ -211,6 +211,23 @@ class Task extends Database
             throw $e;
         }
     }
+
+    /**
+     * delete task
+     * @param string $id
+     */
+    public function delete($id){
+        try{  
+
+            $stmt = $this->pdo->prepare("DELETE FROM task WHERE id=?");
+            $stmt->execute([$id]);
+            return ["message" => "La tache a été correctement supprimée"];
+        }catch(Exception $e) {
+            throw $e;
+        }
+        
+    
+    }
 }
 
 ?>
