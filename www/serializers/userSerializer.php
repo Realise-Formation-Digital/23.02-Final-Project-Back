@@ -1,5 +1,6 @@
 <?php
 
+use App\models\User;
 
 function serializeUser(array $users)
 {
@@ -25,4 +26,14 @@ function serializeUser(array $users)
    } catch (Exception $e) {
       throw $e;
    }
+}
+
+function serializeOneUser(User $user): array
+{
+    return [
+        "id" => $user->get_id(),
+        "last_name" => $user->get_last_name(),
+        "first_name" => $user->get_first_name(),
+        "image" => $user->get_image(),
+    ];
 }

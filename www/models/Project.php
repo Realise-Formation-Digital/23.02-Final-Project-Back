@@ -1,18 +1,23 @@
 <?php
 namespace App\models;
 
+use AllowDynamicProperties;
 use Exception;
+use PDO;
 
+#[AllowDynamicProperties]
 class Project extends Database
 
 {
-    private int $id;
+    private ?int $id;
 
     private string $title;
 
-    private string $status;
+    private string $status = "inProgress";
 
-    private array $copil_list;
+    private array $status_columns = [];
+
+    private array $copil_list = [];
 
     /**
      * @return int|null
@@ -62,16 +67,32 @@ class Project extends Database
         $this->status = $status;
     }
 
-        /**
-     * @return array|null
+    /**
+     * @return array
      */
-    public function getCopilList(): ?array
+    public function getStatusColumns(): array
+    {
+        return $this->status_columns;
+    }
+
+    /**
+     * @param array $status_columns
+     */
+    public function setStatusColumns(array $status_columns): void
+    {
+        $this->status_columns = $status_columns;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCopilList(): array
     {
         return $this->copil_list;
     }
 
     /**
-     * @param array|null $copil_list
+     * @param array $copil_list
      */
     public function setCopilList(array $copil_list): void
     {
@@ -79,11 +100,70 @@ class Project extends Database
     }
 
     /**
+     * Method which read a project with status columns, copil list and tasks
+     *
+     * @param int $id
+     * @return Project
+     * @throws Exception
+     */
+    public function read(int $id): Project {
+        try {
+            // get project
+            $stmt = $this->pdo->prepare('SELECT * FROM project WHERE id = :id');
+            $stmt->execute([
+                'id' => $id
+            ]);
+            $project = $stmt->fetchObject( Project::class);
+
+            if (!$project) {
+                throw new Exception("Le projet d'id $id n'existe pas.", 400);
+            }
+
+            // get users (= copil list) from project
+            $stmt = $this->pdo->prepare('SELECT user.id, user.last_name, user.first_name, user.image FROM project_user JOIN user ON project_user.user_id = user.id WHERE project_user.project_id = :project_id');
+            $stmt->execute([
+                'project_id' => $id
+            ]);
+            $users = $stmt->fetchAll( PDO::FETCH_CLASS, User::class);
+
+            //add users to project
+            $project->setCopilList($users);
+
+            // get columns from project
+            $stmt = $this->pdo->prepare('SELECT * FROM status_column WHERE project_id = :project_id ORDER BY position ASC');
+            $stmt->execute([
+                'project_id' => $id
+            ]);
+            $status_columns = $stmt->fetchAll( PDO::FETCH_CLASS, StatusColumn::class);
+
+            // add tasks to columns
+            foreach($status_columns as &$status_column) {
+                //get tasks for 1 column
+                $stmt = $this->pdo->prepare('SELECT * FROM task WHERE status_column_id = :status_column_id ORDER BY end_date ASC');
+                $stmt->execute([
+                    'status_column_id' => $status_column->getId()
+                ]);
+                $tasks = $stmt->fetchAll( PDO::FETCH_CLASS, Task::class);
+
+                // add tasks to column
+                $status_column->setTasks($tasks);
+            }
+             // add columns to project
+             $project->setStatusColumns($status_columns);
+             return $project;
+         } catch (Exception $e) {
+             throw $e;
+         }
+     }
+
+
+
+    /**
      * Method which update project, persists in DB and return project object
      *
      * @param int $id
      * @param Project $project
-     * @param array $copil_list
+     * @param array $copil_lis
      * @return Project
      * @throws Exception
      */
@@ -112,4 +192,5 @@ class Project extends Database
         }
     }
 
+         
 }

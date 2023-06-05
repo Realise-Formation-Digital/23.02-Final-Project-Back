@@ -6,9 +6,15 @@ require_once("./baseController.php");
 
 use App\models\Project;
 
+
+/**
+ * @throws Exception
+ */
 function read(int $id)
 {
-
+    $project = new Project();
+    $project = $project->read($id);
+    return serializeProjectById($project);
 }
 
 
