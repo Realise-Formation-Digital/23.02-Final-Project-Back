@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Exception;
 
 class Task extends Database
 {
