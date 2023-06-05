@@ -1,6 +1,6 @@
 <?php
 
-require_once("../models/Project.php");
+require_once("../vendor/autoload.php");
 require_once("../serializers/projectSerializer.php");
 require_once("./baseController.php");
 
@@ -26,16 +26,15 @@ function create(stdClass $body): array
 /**
  * update un projet 
  *
- * @param  mixed $id
- * @param  mixed $body
- * @param  mixed $copil_list
+ * @param  int $id
+ * @param  Class $body
  * @return array
  */
 function put(int $id, stdClass $body): array
 {
-    $project = deserializeTask($body);
+    $project = deserializeProject($body);
     $updateProject = $project->update($id, $project);
-    return serializeTask($updateProject);
+    return serializeProject($updateProject);
 }
 
 function patch(int $id, stdClass $body): array

@@ -91,13 +91,21 @@ class Project extends Database
     {
         try {
             $this->setId($id);
-            $stmt = $this->pdo->prepare("UPDATE project SET title= :title, status= :status WHERE id= :id");
-            $stmt->execute([
+            $stmtUpdate = $this->pdo->prepare("UPDATE project SET title= :title, status= :status WHERE id= :id");
+            $stmtUpdate->execute([
                 "title" => $project->getTitle(),
                 "status" => $project->getStatus(),
                 "id" => $id
             ]);
-
+            $stmtDelete = $this->pdo->prepare("DELETE FROM project_user WHERE project_id= ?");
+            $stmtDelete->execute([$id]);
+            foreach($project->copil_list as $pilot){   
+                $stmtInsert = $this->pdo->prepare("INSERT INTO project_user (project_id, user_id) VALUES (:project_id, :user_id)");
+                $stmtInsert->execute([
+                    "project_id" => $id,
+                    "user_id" => $pilot
+                ]);
+            }
             return $project;
         } catch (Exception $e) {
             throw $e;

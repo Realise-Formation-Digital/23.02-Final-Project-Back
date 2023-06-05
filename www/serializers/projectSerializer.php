@@ -42,7 +42,7 @@ function deserializeProject(stdClass $body): Project
     }
 
     if (!empty($body->status)) {
-        $project->setTitle($body->status);
+        $project->setStatus($body->status);
     } else {
         throw new Exception("Le status ne peut pas être nul.", 400);
     }
@@ -52,6 +52,8 @@ function deserializeProject(stdClass $body): Project
     } else {
         throw new Exception(("La liste ne peut être vide"));
     }
+
+    return $project;
 
 }
 
