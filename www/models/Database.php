@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Models;
+namespace App\models;
 
-use App\Db\Connection;
+use App\db\Connection;
 use Exception;
 
 class Database
 {
     protected $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         try {
             $this->pdo = Connection::getConnection();
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }

@@ -2,7 +2,7 @@
 
 require_once("../vendor/autoload.php");
 
-use App\Models\Task;
+use App\models\Task;
 
 /**
  * Function which serializes task
@@ -17,7 +17,8 @@ function serializeTask(Task $task): array
         'title' => $task->getTitle(),
         "description" => $task->getDescription(),
         "start_date" => $task->getStartDate(),
-        "end_date" => $task->getEndDate()
+        "end_date" => $task->getEndDate(),
+        "sector" => $task->getSector()
     ];
 }
 
@@ -32,7 +33,7 @@ function serializeTask(Task $task): array
 function deserializeTask(stdClass $body): Task
 {
     $task = new Task();
-
+    
     if (!empty($body->title)) {
         $task->setTitle($body->title);
 
@@ -50,7 +51,7 @@ function deserializeTask(stdClass $body): Task
             throw new Exception("La description ne peut pas avoir plus que 250 caractères.", 400);
         }
     } else {
-        throw new Exception("La description ne peut pas être nul.", 400);
+        throw new Exception("La description ne peut pas être nulle.", 400);
     }
 
     if (!empty($body->start_date)) {
@@ -71,7 +72,14 @@ function deserializeTask(stdClass $body): Task
         throw new Exception("La date de fin ne peut pas être nulle.", 400);
     }
 
-    $task->setSector($body->sector);
+    if (!empty($body->sector)) {
+        if ($body->sector!="blanchisserie" && $body->sector!="horlogerie" && $body->sector!="jardinerie" && $body->sector!="nettoyage" && $body->sector!="administration" && $body->sector!="informatique"){
+            throw new Exception("Ce secteur n'existe pas.", 400);
+        }
+        $task->setSector($body->sector);
+    } else {
+        $task->setSector(null);
+    }
 
     return $task;
 }
@@ -89,4 +97,5 @@ function test_date(string $date): void {
         throw new Exception("La date doit être valide et au format YYYY-MM-DD. Exemple: 2023-06-05", 400);
     }
 }
+
 

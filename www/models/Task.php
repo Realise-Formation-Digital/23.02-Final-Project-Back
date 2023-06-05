@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\models;
 
 use Exception;
 
@@ -146,6 +146,36 @@ class Task extends Database
     }
 
     /**
+     * Method which update task, persists in DB and return task object
+     *
+     * @param int $id
+     * @param Task $task
+     * @return Task
+     * @throws Exception
+     */
+    public function update(int $id, Task $task): Task
+    {
+        try {
+            $this->setId($id);
+            $stmt = $this->pdo->prepare("UPDATE task SET title= :title, description= :description, start_date= :start_date, end_date= :end_date, sector= :sector, status_column_id= :status_column_id, user_id= :user_id WHERE id= :id");
+            $stmt->execute([
+                "title" => $task->getTitle(),
+                "description" => $task->getDescription(),
+                "start_date" => $task->getStartDate(),
+                "end_date" => $task->getEndDate(),
+                "sector" => $task->getSector(),
+                "status_column_id" => 1,
+                "user_id" => 1,
+                "id" => $id
+            ]);
+            
+            return $task;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    /**
      * delete task
      * @param int $id
      */
@@ -156,3 +186,5 @@ class Task extends Database
     
     }
 }
+
+?>
