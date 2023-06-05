@@ -17,7 +17,8 @@ function serializeTask(Task $task): array
         'title' => $task->getTitle(),
         "description" => $task->getDescription(),
         "start_date" => $task->getStartDate(),
-        "end_date" => $task->getEndDate()
+        "end_date" => $task->getEndDate(),
+        "sector" => $task->getSector()
     ];
 }
 
@@ -50,7 +51,7 @@ function deserializeTask(stdClass $body): Task
             throw new Exception("La description ne peut pas avoir plus que 250 caractères.", 400);
         }
     } else {
-        throw new Exception("La description ne peut pas être nul.", 400);
+        throw new Exception("La description ne peut pas être nulle.", 400);
     }
 
     if (!empty($body->start_date)) {
@@ -72,6 +73,9 @@ function deserializeTask(stdClass $body): Task
     }
 
     if (!empty($body->sector)) {
+        if ($body->sector!="blanchisserie" && $body->sector!="horlogerie" && $body->sector!="jardinerie" && $body->sector!="nettoyage" && $body->sector!="administration" && $body->sector!="informatique"){
+            throw new Exception("Ce secteur n'existe pas.", 400);
+        }
         $task->setSector($body->sector);
     } else {
         $task->setSector(null);
