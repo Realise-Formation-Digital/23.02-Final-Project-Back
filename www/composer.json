@@ -1,0 +1,16 @@
+{
+    "name": "back_team/back_project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "./"
+        }
+    },
+    "authors": [
+        {
+            "name": "Backend Team Réalise"
+        }
+    ],
+    "require": {
+        "symfony/var-dumper": "^6.3"
+    }
+}

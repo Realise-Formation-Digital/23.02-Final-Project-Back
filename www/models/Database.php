@@ -1,6 +1,9 @@
 <?php
 
-require_once("../db/Connection.php");
+namespace App\Models;
+
+use App\Db\Connection;
+use Exception;
 
 class Database
 {
