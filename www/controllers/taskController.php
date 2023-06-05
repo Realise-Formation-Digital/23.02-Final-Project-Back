@@ -43,8 +43,10 @@ function patch(int $id, stdClass $body): array
 }
 
 
-function delete(int $id): array
-{
+function delete(int $id): array{
+        $task = new Task();
+        $deleteTask = $task->delete($id);
+        return $deleteTask;
+    }
 
-}
 
