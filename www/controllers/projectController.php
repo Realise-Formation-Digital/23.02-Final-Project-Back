@@ -1,13 +1,20 @@
 <?php
 
-require_once("../models/Project.php");
+require_once("../vendor/autoload.php");
 require_once("../serializers/projectSerializer.php");
 require_once("./baseController.php");
 
+use App\models\Project;
 
+
+/**
+ * @throws Exception
+ */
 function read(int $id)
 {
-
+    $project = new Project();
+    $project = $project->read($id);
+    return serializeProjectById($project);
 }
 
 
