@@ -24,6 +24,13 @@ function create(stdClass $body): array
 }
 
 
+/**
+ * update project
+ *
+ * @param  mixed $id
+ * @param  mixed $body
+ * @return array
+ */
 function put(int $id, stdClass $body): array
 {
     $project = deserializeTask($body);
