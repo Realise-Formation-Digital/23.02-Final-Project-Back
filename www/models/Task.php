@@ -156,18 +156,18 @@ class Task extends Database
     public function update(int $id, Task $task): Task
     {
         try {
-            $stmt = $this->pdo->prepare("UPDATE task SET title=?, description=?, start_date=?, end_date=?, sector=?, status_column_id=?, user_id=? WHERE id=?");
+            $stmt = $this->pdo->prepare("UPDATE task SET title= :title, description= :description, start_date= :start_date, end_date= :end_date, sector= :sector, status_column_id= :status_column_id, user_id= :user_id WHERE id= :id");
             $stmt->execute([
-                "id" => $task->getId($id),
                 "title" => $task->getTitle(),
                 "description" => $task->getDescription(),
                 "start_date" => $task->getStartDate(),
                 "end_date" => $task->getEndDate(),
                 "sector" => $task->getSector(),
                 "status_column_id" => 1,
-                "user_id" => 1
+                "user_id" => 1,
+                "id" => $id
             ]);
-
+            
             return $task;
         } catch (Exception $e) {
             throw $e;

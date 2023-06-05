@@ -35,6 +35,7 @@ try {
             break;
         case 'PUT':
             $result = put($id, $body);
+            break;
         case 'PATCH':
             $result = patch($id, $body);
             break;
