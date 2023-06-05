@@ -6,6 +6,7 @@ require_once("../serializers/taskSerializer.php");
 
 function serializeStatusColumn(StatusColumn $statusColumn): array
 {
+    // serialize tasks
     $tasks = [];
     foreach ($statusColumn->getTasks() as $task) {
         $tasks[] = serializeTask($task);

@@ -100,6 +100,13 @@ class Project extends Database
         $this->copil_list = $copil_list;
     }
 
+    /**
+     * Method which read a project with status columns, copil list and tasks
+     *
+     * @param int $id
+     * @return Project
+     * @throws Exception
+     */
     public function read(int $id): Project {
         try {
             // get project
