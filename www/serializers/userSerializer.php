@@ -7,7 +7,6 @@ function serializeUser(array $users)
       $userList = [];
       foreach ($users as $usr) {
          $usr_id = $usr->get_id();
-         dump($usr->get_first_name());
          if (!isset($userList[$usr_id])) {
             $userList[$usr_id] = [
                "id" => $usr_id,
