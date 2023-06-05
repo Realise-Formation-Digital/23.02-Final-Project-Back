@@ -1,8 +1,8 @@
 <?php
 
-require_once("../models/Database.php");
+namespace App\Models;
 
-class Task
+class Task extends Database
 {
 
 }
