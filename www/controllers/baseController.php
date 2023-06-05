@@ -12,6 +12,7 @@ if ($method == "OPTIONS") {
     die();
 }
 
+
 parse_str($_SERVER['QUERY_STRING'], $query);
 $body = json_decode(file_get_contents('php://input'), false);
 

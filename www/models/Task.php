@@ -3,6 +3,7 @@
 namespace App\models;
 
 use Exception;
+use PDO;
 
 class Task extends Database
 {
@@ -113,6 +114,42 @@ class Task extends Database
     {
         $this->sector = $sector;
     }
+
+
+
+
+    /**
+     * Method that add task
+     * 
+     * @param int $id
+     * @param int $status_column_id
+     * @throws Exception
+     */
+    public function patch(int $id, int $status_column_id){
+        try{
+            /**/
+            $stmtFetch = $this->pdo->prepare("SELECT * FROM task WHERE id=:id");
+            $stmtFetch-> execute([
+                "id" => $id,
+            ]);
+
+            $task = $stmtFetch->fetch(PDO::FETCH_OBJ);
+
+            if(!$task==true){
+                throw new Exception('Cette tache nexiste pas', 400);
+            }
+
+            $stmtUpdate = $this->pdo->prepare("UPDATE task SET status_column_id=:status_column_id WHERE id = :id");
+            $stmtUpdate->execute ([
+                "id" => $id,
+                "status_column_id" =>$status_column_id
+            ]);
+        }catch (Exception $e){
+            throw $e;
+        }
+    }
+
+
 
     /**
      * Method which creates task, persists in DB and return task object
