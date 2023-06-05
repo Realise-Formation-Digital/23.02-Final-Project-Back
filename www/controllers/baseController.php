@@ -46,6 +46,14 @@ try {
     echo json_encode($result);
 
 } catch(Exception $e) {
-    http_response_code($e->getCode());
+
+    // convert string code error from PDO in 500 error
+    if (gettype($e->getCode()) == "string") {
+        $codeError = 500;
+    } else {
+        $codeError = $e->getCode();
+    }
+
+    http_response_code($codeError);
     echo json_encode(['message' => $e->getMessage()]);
 }
