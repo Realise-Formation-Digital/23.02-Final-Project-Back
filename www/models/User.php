@@ -1,8 +1,8 @@
 <?php
 
-require_once("../models/Database.php");
+namespace App\Models;
 
-class User
+class User extends Database
 {
 
 }

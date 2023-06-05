@@ -1,10 +1,8 @@
 <?php
 
-use App\Db\Connection;
+namespace App\Models;
 
-require_once("../models/Database.php");
-
-class Task extends Connection
+class Task extends Database
 {
 
     /**
