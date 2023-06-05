@@ -37,7 +37,10 @@ function put(int $id, stdClass $body): array
 
 function patch(int $id, stdClass $body): array
 {
-
+    
+    $task = new Task();
+    dump(id);
+    $task = $task->patch($id, $body);
 }
 
 

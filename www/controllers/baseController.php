@@ -12,6 +12,7 @@ if ($method == "OPTIONS") {
     die();
 }
 
+
 parse_str($_SERVER['QUERY_STRING'], $query);
 $body = json_decode(file_get_contents('php://input'), false);
 
@@ -35,6 +36,7 @@ try {
             break;
         case 'PUT':
             $result = put($id, $body);
+            break;
         case 'PATCH':
             $result = patch($id, $body);
             break;

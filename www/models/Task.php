@@ -114,6 +114,30 @@ class Task extends Database
         $this->sector = $sector;
     }
 
+
+
+
+    /**
+     * Method that add task
+     * 
+     * @param int $id
+     * @param int $status_column_id
+     * @throws Exception
+     */
+    public function patch(int $id, int $status_column_id){
+        try{
+            $stmt = $this->pdo->prepare("UPDATE task (status_column_id) VALUES (:status_column_id) WHERE id = :id");
+            $stmt->execute ([
+                "id" => $id,
+                "status_column_id" =>$status_column_id
+            ]);
+        }catch (Exception $e){
+            throw $e;
+        }
+    }
+
+
+
     /**
      * Method which creates task, persists in DB and return task object
      *
