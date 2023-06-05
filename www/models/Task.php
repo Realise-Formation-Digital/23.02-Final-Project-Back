@@ -144,6 +144,35 @@ class Task extends Database
             throw $e;
         }
     }
+
+    /**
+     * Method which update task, persists in DB and return task object
+     *
+     * @param int $id
+     * @param Task $task
+     * @return Task
+     * @throws Exception
+     */
+    public function update(int $id, Task $task): Task
+    {
+        try {
+            $stmt = $this->pdo->prepare("UPDATE task SET title=?, description=?, start_date=?, end_date=?, sector=?, status_column_id=?, user_id=? WHERE id=?");
+            $stmt->execute([
+                "id" => $task->getId($id),
+                "title" => $task->getTitle(),
+                "description" => $task->getDescription(),
+                "start_date" => $task->getStartDate(),
+                "end_date" => $task->getEndDate(),
+                "sector" => $task->getSector(),
+                "status_column_id" => 1,
+                "user_id" => 1
+            ]);
+
+            return $task;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
 }
 
 ?>
