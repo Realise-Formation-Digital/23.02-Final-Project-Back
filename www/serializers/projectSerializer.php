@@ -32,12 +32,6 @@ function serializeProjectById(Project $project): array
         'copil_list' => $copil_list,
         "status_columns" => $status_columns
     ];
-    return [
-        'id' => $project->getId(),
-        'title' => $project->getTitle(),
-        "status" => $project->getStatus(),
-        "copil_list" => $project->getCopilList(),
-    ];
 }
 /**
  * serialize un projet Project
@@ -51,7 +45,7 @@ function serializeProject(Project $project): array
         'id' => $project->getId(),
         'title' => $project->getTitle(),
         "status" => $project->getStatus(),
-        "copil_list" => $project->getCopilList(),
+        "copil_list" => $project->getCopilList()
     ];
 }
 
