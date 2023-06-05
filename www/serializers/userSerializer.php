@@ -3,7 +3,6 @@
 
 function serializeUser(array $users)
 {
-   // dump($users);
    try {
       $userList = [];
       foreach ($users as $usr) {
