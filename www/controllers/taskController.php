@@ -24,9 +24,8 @@ function search(): array
  */
 function create(stdClass $body): array
 {
-    $object_task = deserializeTask($body);
-    $task = new Task();
-    $task = $task->create($object_task);
+    $task = deserializeTask($body);
+    $task = $task->create($task);
     return serializeTask($task);
 }
 
