@@ -29,10 +29,18 @@ function create(stdClass $body): array
 
 }
 
-
+/**
+ * update un projet 
+ *
+ * @param  int $id
+ * @param  Class $body
+ * @return array
+ */
 function put(int $id, stdClass $body): array
 {
-
+    $project = deserializeProject($body);
+    $updateProject = $project->update($id, $project);
+    return serializeProject($updateProject);
 }
 
 function patch(int $id, stdClass $body): array

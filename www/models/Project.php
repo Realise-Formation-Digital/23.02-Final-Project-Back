@@ -1,5 +1,4 @@
 <?php
-
 namespace App\models;
 
 use AllowDynamicProperties;
@@ -14,7 +13,7 @@ class Project extends Database
 
     private string $title;
 
-    private string $status = "toDo";
+    private string $status = "inProgress";
 
     private array $status_columns = [];
 
@@ -149,12 +148,49 @@ class Project extends Database
                 // add tasks to column
                 $status_column->setTasks($tasks);
             }
+             // add columns to project
+             $project->setStatusColumns($status_columns);
+             return $project;
+         } catch (Exception $e) {
+             throw $e;
+         }
+     }
 
-            // add columns to project
-            $project->setStatusColumns($status_columns);
+
+
+    /**
+     * Method which update project, persists in DB and return project object
+     *
+     * @param int $id
+     * @param Project $project
+     * @param array $copil_lis
+     * @return Project
+     * @throws Exception
+     */
+    public function update(int $id, Project $project): Project
+    {
+        try {
+            $this->setId($id);
+            $stmtUpdate = $this->pdo->prepare("UPDATE project SET title= :title, status= :status WHERE id= :id");
+            $stmtUpdate->execute([
+                "title" => $project->getTitle(),
+                "status" => $project->getStatus(),
+                "id" => $id
+            ]);
+            $stmtDelete = $this->pdo->prepare("DELETE FROM project_user WHERE project_id= ?");
+            $stmtDelete->execute([$id]);
+            foreach($project->copil_list as $pilot){   
+                $stmtInsert = $this->pdo->prepare("INSERT INTO project_user (project_id, user_id) VALUES (:project_id, :user_id)");
+                $stmtInsert->execute([
+                    "project_id" => $id,
+                    "user_id" => $pilot
+                ]);
+            }
             return $project;
         } catch (Exception $e) {
             throw $e;
         }
     }
+
+         
 }
