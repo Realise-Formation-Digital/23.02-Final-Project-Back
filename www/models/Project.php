@@ -18,6 +18,8 @@ class Project extends Database
 
     private array $status_columns = [];
 
+    private array $copil_list = [];
+
     /**
      * @return int|null
      */
@@ -82,6 +84,22 @@ class Project extends Database
         $this->status_columns = $status_columns;
     }
 
+    /**
+     * @return array
+     */
+    public function getCopilList(): array
+    {
+        return $this->copil_list;
+    }
+
+    /**
+     * @param array $copil_list
+     */
+    public function setCopilList(array $copil_list): void
+    {
+        $this->copil_list = $copil_list;
+    }
+
     public function read(int $id): Project {
         try {
             // get project
@@ -94,6 +112,16 @@ class Project extends Database
             if (!$project) {
                 throw new Exception("Le projet d'id $id n'existe pas.", 400);
             }
+
+            // get users (= copil list) from project
+            $stmt = $this->pdo->prepare('SELECT user.id, user.last_name, user.first_name, user.image FROM project_user JOIN user ON project_user.user_id = user.id WHERE project_user.project_id = :project_id');
+            $stmt->execute([
+                'project_id' => $id
+            ]);
+            $users = $stmt->fetchAll( PDO::FETCH_CLASS, User::class);
+
+            //add users to project
+            $project->setCopilList($users);
 
             // get columns from project
             $stmt = $this->pdo->prepare('SELECT * FROM status_column WHERE project_id = :project_id ORDER BY position ASC');

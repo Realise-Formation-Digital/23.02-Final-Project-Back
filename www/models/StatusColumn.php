@@ -11,6 +11,8 @@ class StatusColumn extends Database
 
     private string $title;
 
+    private int $position;
+
     private array $tasks;
 
     /**
@@ -43,6 +45,22 @@ class StatusColumn extends Database
     public function setTitle(string $title): void
     {
         $this->title = $title;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param int $position
+     */
+    public function setPosition(int $position): void
+    {
+        $this->position = $position;
     }
 
     /**

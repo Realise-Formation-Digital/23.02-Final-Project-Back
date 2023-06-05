@@ -14,6 +14,7 @@ function serializeStatusColumn(StatusColumn $statusColumn): array
     return [
         'id' => $statusColumn->getId(),
         'title' => $statusColumn->getTitle(),
+        'position' => $statusColumn->getPosition(),
         'tasks' => $tasks
     ];
 }

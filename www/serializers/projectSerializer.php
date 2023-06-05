@@ -3,6 +3,7 @@
 use App\models\Project;
 
 require_once("../serializers/statusColumnSerializer.php");
+require_once("../serializers/userSerializer.php");
 
 function serializeProjectById(Project $project): array
 {
@@ -10,10 +11,16 @@ function serializeProjectById(Project $project): array
     foreach ($project->getStatusColumns() as $statusColumn) {
         $status_columns[] = serializeStatusColumn($statusColumn);
     }
+
+    $copil_list = [];
+    foreach ($project->getCopilList() as $copil_user) {
+        $copil_list[] = serializeOneUser($copil_user);
+    }
+
     return [
         'id' => $project->getId(),
         'title' => $project->getTitle(),
-        'status' => $project->getStatus(),
+        'copil_list' => $copil_list,
         "status_columns" => $status_columns
     ];
 }
