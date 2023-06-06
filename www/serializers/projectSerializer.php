@@ -69,12 +69,6 @@ function deserializeProject(stdClass $body): Project
         throw new Exception("Le titre ne peut pas être nul.", 400);
     }
 
-    if (!empty($body->status)) {
-        $project->setStatus($body->status);
-    } else {
-        throw new Exception("Le status ne peut pas être nul.", 400);
-    }
-
     if (!empty($body->copil_list)) {
         $project->setCopilList($body->copil_list);
     } else {

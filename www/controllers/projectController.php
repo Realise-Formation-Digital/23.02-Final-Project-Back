@@ -18,7 +18,7 @@ function read(int $id)
 }
 
 
-function search(): array
+function search()
 {
 }
 
@@ -29,16 +29,15 @@ function search(): array
  */
 function create(stdClass $body): array
 {
-    $project = deserializeProject($body);
-    $project = $project->create($project);
-    return serializeProject($project);
+    $prjct = deserializeProject($body);
+    return $prjct->create($prjct);
 }
 
 /**
  * update un projet 
  *
  * @param  int $id
- * @param  Class $body
+ * @param  stdClass $body
  * @return array
  */
 function put(int $id, stdClass $body): array
@@ -48,11 +47,11 @@ function put(int $id, stdClass $body): array
     return serializeProject($updateProject);
 }
 
-function patch(int $id, stdClass $body): array
+function patch(int $id, stdClass $body)
 {
 }
 
 
-function delete(int $id): array
+function delete(int $id)
 {
 }
