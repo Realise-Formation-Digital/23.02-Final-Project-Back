@@ -3,6 +3,7 @@
 namespace App\models;
 
 use App\db\Connection;
+
 use Exception;
 
 class Database

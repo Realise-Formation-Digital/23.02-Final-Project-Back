@@ -1,7 +1,23 @@
 <?php
 
+use App\models\StatusColumn;
+
+require_once("../serializers/taskSerializer.php");
+
 function serializeStatusColumn(StatusColumn $statusColumn): array
 {
+    // serialize tasks
+    $tasks = [];
+    foreach ($statusColumn->getTasks() as $task) {
+        $tasks[] = serializeTask($task);
+    }
+
+    return [
+        'id' => $statusColumn->getId(),
+        'title' => $statusColumn->getTitle(),
+        'position' => $statusColumn->getPosition(),
+        'tasks' => $tasks
+    ];
 }
 
 
