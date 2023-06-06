@@ -1,6 +1,8 @@
 <?php
 
-require_once("../models/Project.php");
+use App\models\Project;
+
+require_once("../vendor/autoload.php");
 require_once("../serializers/projectSerializer.php");
 require_once("./baseController.php");
 
@@ -34,8 +36,7 @@ function patch(int $id, stdClass $body): array
 }
 
 
-function delete(int $id): array
-{
-
+function delete(int $id): array{
+    $project = new Project();
+    return $project->delete($id);
 }
-
