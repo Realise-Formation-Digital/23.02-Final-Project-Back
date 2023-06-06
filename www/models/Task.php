@@ -161,9 +161,9 @@ class Task extends Database
     public function create(Task $task, int $project_id): Task
     {
         try {
-            $stmtSelectColId = $this->pdo->prepare("SELECT id FROM status_column WHERE project_id = ? AND title = 'to-do'");
-            $stmtSelectColId->execute([$project_id]);
-            $col_id = $stmtSelectColId->fetch(PDO::FETCH_OBJ);
+            $stmtSelectColPos = $this->pdo->prepare("SELECT position FROM status_column WHERE project_id = ? AND title = 'to-do'");
+            $stmtSelectColPos->execute([$project_id]);
+            $col_pos = $stmtSelectColPos->fetch(PDO::FETCH_OBJ);
             $stmt = $this->pdo->prepare("INSERT INTO task (title, description, start_date, end_date, sector, status_column_id, user_id) VALUES (:title, :description, :start_date, :end_date, :sector, :status_column_id, :user_id)");
             $stmt->execute([
                 "title" => $task->getTitle(),
@@ -171,12 +171,11 @@ class Task extends Database
                 "start_date" => $task->getStartDate(),
                 "end_date" => $task->getEndDate(),
                 "sector" => $task->getSector(),
-                "status_column_id" => $col_id,
+                "status_column_id" => $col_pos->position,
                 "user_id" => 1
             ]);
             //get new id and add to task object
             $id = $this->pdo->lastInsertId();
-            dd($task, 'id col');
             $task->setId($id);
 
             return $task;
