@@ -157,6 +157,25 @@ class Project extends Database
      }
 
 
+/**
+ * Method that get all Projects- param function = columns table
+ * 
+ */
+public function getProjets(){
+    try{
+    $stmtGetProjects = $this->pdo->prepare("SELECT id, title FROM project WHERE status = :status");
+    $stmtGetProjects->execute([
+                'status' => 'inProgress'
+            ]);
+    /***/
+    return $stmtGetProjects->fetchAll(PDO::FETCH_CLASS, "App\models\Projets");
+}
+catch(Exception $e){
+    throw new Exception($e);
+}
+}
+
+
 
     /**
      * Method which update project, persists in DB and return project object

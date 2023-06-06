@@ -152,7 +152,6 @@ class Task extends Database
     }
 
 
-
     /**
      * Method which creates task, persists in DB and return task object
      *

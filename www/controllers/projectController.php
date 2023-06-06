@@ -18,8 +18,7 @@ function read(int $id)
 }
 
 
-function search(): array
-{
+function search(): array {
 
 }
 
