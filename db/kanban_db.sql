@@ -181,3 +181,16 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+--
+-- Add 4 columns when insert project
+--
+DELIMITER $$
+CREATE TRIGGER `after_insert_project_insert_columns` AFTER INSERT ON `project` FOR EACH ROW BEGIN
+    INSERT INTO status_column(title, position, project_id) VALUES ("toDo", 1, new.id);
+    INSERT INTO status_column(title, position, project_id) VALUES ("inProgress", 2, new.id);
+    INSERT INTO status_column(title, position, project_id) VALUES ("validated", 3, new.id);
+    INSERT INTO status_column(title, position, project_id) VALUES ("done", 4, new.id);
+END
+$$
+DELIMITER ;
