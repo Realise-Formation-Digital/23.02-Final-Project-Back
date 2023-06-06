@@ -2,9 +2,11 @@
 
 namespace App\models;
 
+use AllowDynamicProperties;
 use Exception;
 use PDO;
 
+#[AllowDynamicProperties]
 class User extends Database
 {
    protected $id;
