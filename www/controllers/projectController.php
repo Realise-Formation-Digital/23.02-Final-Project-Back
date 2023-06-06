@@ -30,7 +30,8 @@ function search()
 function create(stdClass $body): array
 {
     $prjct = deserializeProject($body);
-    return $prjct->create($prjct);
+    $prjct = $prjct->create($prjct);
+    return serializeProject($prjct);
 }
 
 /**

@@ -41,11 +41,16 @@ function serializeProjectById(Project $project): array
  */
 function serializeProject(Project $project): array
 {
+    // serialize copil_list
+    $copil_list = [];
+    foreach ($project->getCopilList() as $copil_user) {
+        $copil_list[] = serializeOneUser($copil_user);
+    }
+
     return [
         'id' => $project->getId(),
         'title' => $project->getTitle(),
-        "status" => $project->getStatus(),
-        "copil_list" => $project->getCopilList()
+        "copil_list" => $copil_list
     ];
 }
 

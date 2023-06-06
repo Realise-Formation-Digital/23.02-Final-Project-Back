@@ -121,11 +121,7 @@ class Project extends Database
          }
 
          // get users (= copil list) from project
-         $stmt = $this->pdo->prepare('SELECT user.id, user.last_name, user.first_name, user.image FROM project_user JOIN user ON project_user.user_id = user.id WHERE project_user.project_id = :project_id');
-         $stmt->execute([
-            'project_id' => $id
-         ]);
-         $users = $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
+         $users = $this->getUsersByProjectId($id);
 
          //add users to project
          $project->setCopilList($users);
@@ -159,9 +155,9 @@ class Project extends Database
 
    /**
     * arguments: variable class type Project
-    * returns an array with the last created project info
+    * returns an element type project
     */
-   public function create(Project $prjct): array
+   public function create(Project $prjct): Project
    {
       try {
          $copil = $prjct->getCopilList();
@@ -184,10 +180,12 @@ class Project extends Database
             ]);
          }
 
-         return [
-            'title' => $prjct->getTitle(),
-            'copil_list' => $copil
-         ];
+         // recover users as objects
+         $users = $this->getUsersByProjectId($id);
+         $prjct->setCopilList($users);
+
+         // returns the last created object
+         return $prjct;
       } catch (Exception $e) {
          throw $e;
       }
@@ -227,5 +225,15 @@ class Project extends Database
       } catch (Exception $e) {
          throw $e;
       }
+   }
+
+   private function getUsersByProjectId(int $projectId): array
+   {
+      // get users (= copil list) from project
+      $stmt = $this->pdo->prepare('SELECT user.id, user.last_name, user.first_name, user.image FROM project_user JOIN user ON project_user.user_id = user.id WHERE project_user.project_id = :project_id');
+      $stmt->execute([
+         'project_id' => $projectId
+      ]);
+      return $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
    }
 }
