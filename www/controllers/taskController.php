@@ -44,7 +44,7 @@ function put(int $id,stdClass $body): array
     return serializeTask($updateTask);
 }
 
-function patch(int $id, stdClass $body): array
+function patch(int $id, stdClass $body)
 { 
     $task = new Task();
     //check if id of body task exist 
