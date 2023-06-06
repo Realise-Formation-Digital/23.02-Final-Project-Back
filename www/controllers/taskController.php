@@ -25,7 +25,10 @@ function search(): array
 function create(stdClass $body): array
 {
     $task = deserializeTask($body);
-    $task = $task->create($task);
+    if(empty($body->project_id)){
+        throw new Exception("Il s'agit de quel Kanban ?", 400);
+    }
+    $task = $task->create($task, $body->project_id);
     return serializeTask($task);
 }
 
