@@ -72,6 +72,12 @@ function deserializeTask(stdClass $body): Task
         throw new Exception("La date de fin ne peut pas être nulle.", 400);
     }
 
+    if (!empty($body->pilot)){
+        $task->setPilotId($body->pilot);
+    } else {
+        throw new Exception("La tache doit être attribué à quelqu'un.", 400);
+    }
+
     if (!empty($body->sector)) {
         if ($body->sector!="blanchisserie" && $body->sector!="horlogerie" && $body->sector!="jardinerie" && $body->sector!="nettoyage" && $body->sector!="administration" && $body->sector!="informatique"){
             throw new Exception("Ce secteur n'existe pas.", 400);

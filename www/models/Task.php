@@ -19,6 +19,8 @@ class Task extends Database
 
     private string $end_date;
 
+    private int $pilot;
+
     private ?string $sector;
 
     /**
@@ -102,6 +104,22 @@ class Task extends Database
     }
 
     /**
+     * @return int|null
+     */
+    public function getPilotId(): ?int
+    {
+        return $this->pilot;
+    }
+
+    /**
+     * @param int|null $id
+     */
+    public function setPilotId(?int $id): void
+    {
+        $this->pilot = $id;
+    }
+
+    /**
      * @return string|null
      */
     public function getSector(): ?string
@@ -172,7 +190,7 @@ class Task extends Database
                 "end_date" => $task->getEndDate(),
                 "sector" => $task->getSector(),
                 "status_column_id" => $col_pos->position,
-                "user_id" => 1
+                "user_id" => $task->pilot
             ]);
             //get new id and add to task object
             $id = $this->pdo->lastInsertId();
