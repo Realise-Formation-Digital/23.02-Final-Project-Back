@@ -19,7 +19,7 @@ class Task extends Database
 
     private string $end_date;
 
-    private int $pilot;
+    private User $pilot;
 
     private ?string $sector;
 
@@ -104,19 +104,19 @@ class Task extends Database
     }
 
     /**
-     * @return int|null
+     * @return User
      */
-    public function getPilotId(): ?int
+    public function getPilot(): User
     {
         return $this->pilot;
     }
 
     /**
-     * @param int|null $id
+     * @param User $pilot
      */
-    public function setPilotId(?int $id): void
+    public function setPilot(User $pilot): void
     {
-        $this->pilot = $id;
+        $this->pilot = $pilot;
     }
 
     /**
@@ -173,15 +173,18 @@ class Task extends Database
      *
      * @param Task $task
      * @param int $project_id
+     * @param int $user_id
      * @return Task
      * @throws Exception
      */
-    public function create(Task $task, int $project_id): Task
+    public function create(Task $task, int $project_id, int $user_id): Task
     {
         try {
-            $stmtSelectColPos = $this->pdo->prepare("SELECT position FROM status_column WHERE project_id = ? AND title = 'to-do'");
+            $stmtSelectColPos = $this->pdo->prepare("SELECT id FROM status_column WHERE project_id = ? AND title = 'toDo'");
             $stmtSelectColPos->execute([$project_id]);
             $col_pos = $stmtSelectColPos->fetch(PDO::FETCH_OBJ);
+
+        
             $stmt = $this->pdo->prepare("INSERT INTO task (title, description, start_date, end_date, sector, status_column_id, user_id) VALUES (:title, :description, :start_date, :end_date, :sector, :status_column_id, :user_id)");
             $stmt->execute([
                 "title" => $task->getTitle(),
@@ -189,12 +192,25 @@ class Task extends Database
                 "start_date" => $task->getStartDate(),
                 "end_date" => $task->getEndDate(),
                 "sector" => $task->getSector(),
-                "status_column_id" => $col_pos->position,
-                "user_id" => $task->pilot
+                "status_column_id" => $col_pos->id,
+                "user_id" => $user_id
             ]);
-            //get new id and add to task object
-            $id = $this->pdo->lastInsertId();
-            $task->setId($id);
+
+             //get new id and add to task object
+             $id = $this->pdo->lastInsertId();
+             $task->setId($id);
+
+            //get pilot
+            $stmt = $this->pdo->prepare('SELECT * FROM user WHERE id = :user_id');
+            $stmt->execute([
+                'user_id' => $user_id
+            ]);
+            
+            //add pilot to task
+            $pilot = $stmt->fetchObject(User::class);
+
+            //add pilot to task
+            $task->setPilot($pilot);
 
             return $task;
         } catch (Exception $e) {

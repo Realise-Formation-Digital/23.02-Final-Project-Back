@@ -38,12 +38,12 @@ class User extends Database
    // SETTER FUNCTIONS
    public function set_first_name($f_name)
    {
-      $this->image = $f_name;
+      $this->first_name = $f_name;
    }
 
    public function set_last_name($l_name)
    {
-      $this->image = $l_name;
+      $this->last_name = $l_name;
    }
 
    public function set_image($img)

@@ -28,7 +28,10 @@ function create(stdClass $body): array
     if(empty($body->project_id)){
         throw new Exception("Il s'agit de quel Kanban ?", 400);
     }
-    $task = $task->create($task, $body->project_id);
+    if (empty($body->pilot)){
+        throw new Exception("La tache doit être attribué à quelqu'un.", 400);
+    }
+    $task = $task->create($task, $body->project_id, $body->pilot);
     return serializeTask($task);
 }
 

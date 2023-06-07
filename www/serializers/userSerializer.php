@@ -2,6 +2,12 @@
 
 use App\models\User;
 
+/**
+ * serializeUser
+ *
+ * @param  array $users
+ * @return void
+ */
 function serializeUser(array $users)
 {
    try {
@@ -28,6 +34,12 @@ function serializeUser(array $users)
    }
 }
 
+/**
+ * serializeOneUser
+ *
+ * @param  Class $user
+ * @return array
+ */
 function serializeOneUser(User $user): array
 {
     return [
