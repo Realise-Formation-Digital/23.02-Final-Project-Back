@@ -210,10 +210,17 @@ class Project extends Database
             "status" => $project->getStatus(),
             "id" => $id
          ]);
+<<<<<<< HEAD
          $stmtDelete = $this->pdo->prepare("DELETE FROM project_user WHERE project_id= :project_id");
          $stmtDelete->execute([
             "project_id" => $id
          ]);
+=======
+
+         $stmtDelete = $this->pdo->prepare("DELETE FROM project_user WHERE project_id= ?");
+         $stmtDelete->execute([$id]);
+
+>>>>>>> development
          foreach ($project->copil_list as $pilot) {
             $stmtInsert = $this->pdo->prepare("INSERT INTO project_user (project_id, user_id) VALUES (:project_id, :user_id)");
             $stmtInsert->execute([
@@ -221,14 +228,23 @@ class Project extends Database
                "user_id" => $pilot
             ]);
          }
+<<<<<<< HEAD
 
          // recover users as objects
          $users = $this->getUsersByProjectId($id);
          $project->setCopilList($users);
+=======
+         // recover users as objects
+         $users = $this->getUsersByProjectId($id);
+         $project->setCopilList($users);
+
+         // returns change object
+>>>>>>> development
          return $project;
       } catch (Exception $e) {
          throw new Exception($e->getMessage(), 500);
       }
+
    }
 
    private function getUsersByProjectId(int $projectId): array
@@ -240,6 +256,7 @@ class Project extends Database
       ]);
       return $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
    }
+<<<<<<< HEAD
 
    public function delete($id)
    {
@@ -281,3 +298,18 @@ class Project extends Database
       }
    }
 }
+=======
+    
+    public function delete($id){
+        try{
+            $stmt=$this->pdo->prepare("DELETE FROM project WHERE id=?");
+            $stmt->execute([$id]);
+        
+            return ["message"=>"Le projet a bien été supprimé"];
+        }
+        catch(Exception $e){
+            throw $e;
+        }
+    }
+}
+>>>>>>> development
