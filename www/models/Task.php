@@ -142,26 +142,27 @@ class Task extends Database
      * @param int $status_column_id
      * @throws Exception
      */
-    public function patch(int $id, int $status_column_id){
-        try{
+    public function patch(int $id, int $status_column_id)
+    {
+        try {
             /**/
             $stmtFetch = $this->pdo->prepare("SELECT * FROM task WHERE id=:id");
-            $stmtFetch-> execute([
+            $stmtFetch->execute([
                 "id" => $id,
             ]);
 
             $task = $stmtFetch->fetch(PDO::FETCH_OBJ);
 
-            if(!$task==true){
+            if (!$task == true) {
                 throw new Exception('Cette tache nexiste pas', 400);
             }
 
             $stmtUpdate = $this->pdo->prepare("UPDATE task SET status_column_id=:status_column_id WHERE id = :id");
-            $stmtUpdate->execute ([
+            $stmtUpdate->execute([
                 "id" => $id,
-                "status_column_id" =>$status_column_id
+                "status_column_id" => $status_column_id
             ]);
-        }catch (Exception $e){
+        } catch (Exception $e) {
             throw $e;
         }
     }
@@ -184,7 +185,7 @@ class Task extends Database
             $stmtSelectColPos->execute([$project_id]);
             $col_pos = $stmtSelectColPos->fetch(PDO::FETCH_OBJ);
 
-        
+
             $stmt = $this->pdo->prepare("INSERT INTO task (title, description, start_date, end_date, sector, status_column_id, user_id) VALUES (:title, :description, :start_date, :end_date, :sector, :status_column_id, :user_id)");
             $stmt->execute([
                 "title" => $task->getTitle(),
@@ -196,16 +197,16 @@ class Task extends Database
                 "user_id" => $user_id
             ]);
 
-             //get new id and add to task object
-             $id = $this->pdo->lastInsertId();
-             $task->setId($id);
+            //get new id and add to task object
+            $id = $this->pdo->lastInsertId();
+            $task->setId($id);
 
             //get pilot
             $stmt = $this->pdo->prepare('SELECT * FROM user WHERE id = :user_id');
             $stmt->execute([
                 'user_id' => $user_id
             ]);
-            
+
             //add pilot to task
             $pilot = $stmt->fetchObject(User::class);
 
@@ -226,22 +227,33 @@ class Task extends Database
      * @return Task
      * @throws Exception
      */
-    public function update(int $id, Task $task): Task
+    public function update(int $id, Task $task, int $user_id): Task
     {
         try {
             $this->setId($id);
-            $stmt = $this->pdo->prepare("UPDATE task SET title= :title, description= :description, start_date= :start_date, end_date= :end_date, sector= :sector, status_column_id= :status_column_id, user_id= :user_id WHERE id= :id");
+            $stmt = $this->pdo->prepare("UPDATE task SET title= :title, description= :description, start_date= :start_date, end_date= :end_date, sector= :sector, user_id= :user_id WHERE id= :id");
             $stmt->execute([
                 "title" => $task->getTitle(),
                 "description" => $task->getDescription(),
                 "start_date" => $task->getStartDate(),
                 "end_date" => $task->getEndDate(),
                 "sector" => $task->getSector(),
-                "status_column_id" => 1,
-                "user_id" => 1,
+                "user_id" => $user_id,
                 "id" => $id
             ]);
-            
+
+            //get pilot
+            $stmt = $this->pdo->prepare('SELECT * FROM user WHERE id = :user_id');
+            $stmt->execute([
+                'user_id' => $user_id
+            ]);
+
+            //add pilot to task
+            $pilot = $stmt->fetchObject(User::class);
+
+            //add pilot to task
+            $task->setPilot($pilot);
+
             return $task;
         } catch (Exception $e) {
             throw $e;
@@ -252,18 +264,15 @@ class Task extends Database
      * delete task
      * @param string $id
      */
-    public function delete($id){
-        try{  
+    public function delete($id)
+    {
+        try {
 
             $stmt = $this->pdo->prepare("DELETE FROM task WHERE id=?");
             $stmt->execute([$id]);
             return ["message" => "La tache a été correctement supprimée"];
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
-        
-    
     }
 }
-
-?>

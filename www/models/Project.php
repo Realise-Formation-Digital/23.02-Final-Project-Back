@@ -109,16 +109,8 @@ class Project extends Database
    public function read(int $id): Project
    {
       try {
-         // get project
-         $stmt = $this->pdo->prepare('SELECT * FROM project WHERE id = :id');
-         $stmt->execute([
-            'id' => $id
-         ]);
-         $project = $stmt->fetchObject(Project::class);
-
-         if (!$project) {
-            throw new Exception("Le projet d'id $id n'existe pas.", 400);
-         }
+         // TESTS IF THE PROJECT EXISTS IN THE DATABASE
+         $project = $this->getProjectById($id);
 
          // get users (= copil list) from project
          $users = $this->getUsersByProjectId($id);
@@ -149,7 +141,7 @@ class Project extends Database
          $project->setStatusColumns($status_columns);
          return $project;
       } catch (Exception $e) {
-         throw $e;
+         throw new Exception($e->getMessage(), 500);
       }
    }
 
@@ -160,8 +152,10 @@ class Project extends Database
    public function create(Project $prjct): Project
    {
       try {
+         // COPIL LIST AS ARRAY OF INTEGER
          $copil = $prjct->getCopilList();
 
+         // INSERTION OF PROJECT INTO THE DATABASE
          $stmt = $this->pdo->prepare("INSERT INTO project (title, status) VALUES (:title, :status)");
          $stmt->execute([
             "title" => $prjct->getTitle(),
@@ -172,6 +166,7 @@ class Project extends Database
          $id = $this->pdo->lastInsertId();
          $prjct->setId($id);
 
+         // INSERTION OF TABLE RELATIONS ON USERS <---> PROJECT
          foreach ($copil as $pilot) {
             $stmt = $this->pdo->prepare("INSERT INTO project_user (project_id, user_id) VALUES (:project_id, :user_id)");
             $stmt->execute([
@@ -187,7 +182,7 @@ class Project extends Database
          // returns the last created object
          return $prjct;
       } catch (Exception $e) {
-         throw $e;
+         throw new Exception($e->getMessage(), 500);
       }
    }
 
@@ -205,6 +200,9 @@ class Project extends Database
    public function update(int $id, Project $project): Project
    {
       try {
+         // TESTS IF THE PROJECT EXISTS IN THE DATABASE
+         $this->getProjectById($id);
+
          $this->setId($id);
          $stmtUpdate = $this->pdo->prepare("UPDATE project SET title= :title, status= :status WHERE id= :id");
          $stmtUpdate->execute([
@@ -223,16 +221,16 @@ class Project extends Database
                "user_id" => $pilot
             ]);
          }
+
          // recover users as objects
          $users = $this->getUsersByProjectId($id);
          $project->setCopilList($users);
 
-         // returns change object
+
          return $project;
       } catch (Exception $e) {
-         throw $e;
+         throw new Exception($e->getMessage(), 500);
       }
-
    }
 
    private function getUsersByProjectId(int $projectId): array
@@ -244,16 +242,44 @@ class Project extends Database
       ]);
       return $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
    }
-    
-    public function delete($id){
-        try{
-            $stmt=$this->pdo->prepare("DELETE FROM project WHERE id=?");
-            $stmt->execute([$id]);
-        
-            return ["message"=>"Le projet a bien été supprimé"];
-        }
-        catch(Exception $e){
-            throw $e;
-        }
-    }
+
+   public function delete($id)
+   {
+      try {
+         // TESTS IF THE PROJECT EXISTS IN THE DATABASE
+         $this->getProjectById($id);
+
+         $stmt = $this->pdo->prepare("DELETE FROM project WHERE id=?");
+         $stmt->execute([$id]);
+
+         return ["message" => "Le projet a bien été supprimé"];
+      } catch (Exception $e) {
+         throw new Exception($e->getMessage(), 500);
+      }
+   }
+
+   /**
+    * Get one project from the database with the ID inserted
+    * arguments: project ID
+    * returns an element of type Project
+    */
+   private function getProjectById(int $id): Project
+   {
+      try {
+         // get project
+         $stmt = $this->pdo->prepare('SELECT * FROM project WHERE id = :id');
+         $stmt->execute([
+            'id' => $id
+         ]);
+         $project = $stmt->fetchObject(Project::class);
+
+         if (!$project) {
+            throw new Exception("Le projet d'id $id n'existe pas.", 400);
+         }
+
+         return $project;
+      } catch (Exception $e) {
+         throw new Exception($e->getMessage(), 500);
+      }
+   }
 }
