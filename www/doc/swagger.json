@@ -1,0 +1,73 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Kanban",
+        "contact": {
+            "name": "DreamTeam Backend"
+        },
+        "version": "0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8660",
+            "description": "Api Backend Kanban"
+        }
+    ],
+    "paths": {
+        "/projects/{id}": {
+            "get": {
+                "summary": "Method which read a project with status columns, copil list and tasks",
+                "operationId": "31501aca4bab71646d0fbc6bdbed332d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Project id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Get project by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Project"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/projects/:id": {
+            "put": {
+                "summary": "Method which update project, persists in DB and return project object",
+                "operationId": "1b633953412575152d8f875eb2121134",
+                "responses": {
+                    "200": {
+                        "description": "Update project by id"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Project": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    }
+}

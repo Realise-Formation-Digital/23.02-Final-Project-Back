@@ -12,9 +12,10 @@ use OpenApi\Attributes as OA;
 #[OA\Schema()]
 class Project extends Database
 {
-   #[OA\Property()]
+   #[OA\Property(type: "integer")]
    private ?int $id;
 
+   #[OA\Property(type: "string")]
    private string $title;
 
    private string $status = "inProgress";
@@ -110,6 +111,25 @@ class Project extends Database
     * @return Project
     * @throws Exception
     */
+    #[OA\Get(
+        path: '/projects/{id}',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: "Project id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(
+            type: "integer"
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Get project by id',
+        content: new OA\JsonContent(
+            ref: '#/components/schemas/Project'
+        )
+    )]
    public function read(int $id): Project
    {
       try {
@@ -153,25 +173,6 @@ class Project extends Database
     * arguments: variable class type Project
     * returns an element type project
     */
-    #[OA\Get(
-        path: '/projects/{id}',
-    )]
-    #[OA\Parameter(
-        name: 'id',
-        description: "Project id",
-        in: "path",
-        required: true,
-        schema: new OA\Schema(
-            type: "integer"
-        )
-    )]
-    #[OA\Response(
-        response: 200,
-        description: 'Get project by id',
-        content: new OA\JsonContent(
-            ref: '#/components/schemas/Project'
-        )
-    )]
    public function create(Project $prjct): Project
    {
       try {
@@ -249,6 +250,12 @@ class Project extends Database
     * @return Project
     * @throws Exception
     */
+    #[OA\Put(
+        path: '/projects/:id',
+        responses: [
+            new OA\Response(response: 200, description: 'Update project by id'),
+        ]
+    )]
    public function update(int $id, Project $project): Project
    {
       try {
