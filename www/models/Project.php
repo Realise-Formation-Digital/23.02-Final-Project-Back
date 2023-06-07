@@ -244,4 +244,17 @@ class Project extends Database
       ]);
       return $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
    }
+    
+    public function delete($id){
+        try{
+            $stmt=$this->pdo->prepare("DELETE FROM project WHERE id=?");
+            $stmt->execute([$id]);
+        
+            return ["message"=>"Le projet a bien été supprimé"];
+        }
+        catch(Exception $e){
+            throw $e;
+        }
+    }
+}
 }

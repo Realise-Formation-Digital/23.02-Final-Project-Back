@@ -53,6 +53,7 @@ function patch(int $id, stdClass $body)
 }
 
 
-function delete(int $id)
-{
+function delete(int $id): array{
+    $project = new Project();
+    return $project->delete($id);
 }
