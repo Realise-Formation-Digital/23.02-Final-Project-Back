@@ -170,7 +170,8 @@ class Project extends Database
             $stmtGetProjects->execute([
                 'status' => 'inProgress'
             ]);
-            return $stmtGetProjects->fetchAll(PDO::FETCH_CLASS, "App\models\Project");
+            $projects = $stmtGetProjects->fetchAll(PDO::FETCH_CLASS, "App\models\Project");
+            dump($projects);
         } catch (Exception $e) {
             throw new Exception($e);
         }
