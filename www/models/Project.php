@@ -6,10 +6,13 @@ namespace App\models;
 use AllowDynamicProperties;
 use Exception;
 use PDO;
+use OpenApi\Attributes as OA;
 
 #[AllowDynamicProperties]
+#[OA\Schema()]
 class Project extends Database
 {
+   #[OA\Property()]
    private ?int $id;
 
    private string $title;
@@ -150,6 +153,25 @@ class Project extends Database
     * arguments: variable class type Project
     * returns an element type project
     */
+    #[OA\Get(
+        path: '/projects/{id}',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: "Project id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(
+            type: "integer"
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Get project by id',
+        content: new OA\JsonContent(
+            ref: '#/components/schemas/Project'
+        )
+    )]
    public function create(Project $prjct): Project
    {
       try {
