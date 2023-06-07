@@ -27,6 +27,10 @@ services:
   # `webserver` service provides Apache + PHP
   webserver:
     container_name : kanban_server
+    command: 
+      - sh -c "cd www"
+      - sh -c "composer install"
+      - sh -c "composer dump-autoload"
     # Use custom image based on php-apache official image
     build: .
     # Run the services as the same user as the host's one, or as user with uid 1000
