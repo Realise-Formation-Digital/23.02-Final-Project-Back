@@ -1,6 +1,7 @@
 <?php
 
 require_once("../vendor/autoload.php");
+require_once("../serializers/userSerializer.php");
 
 use App\models\Task;
 
@@ -12,12 +13,14 @@ use App\models\Task;
  */
 function serializeTask(Task $task): array
 {
+    $user = serializeOneUser($task->getPilot());
     return [
         'id' => $task->getId(),
         'title' => $task->getTitle(),
         "description" => $task->getDescription(),
         "start_date" => $task->getStartDate(),
         "end_date" => $task->getEndDate(),
+        "pilot" => $user,
         "sector" => $task->getSector()
     ];
 }
@@ -70,12 +73,6 @@ function deserializeTask(stdClass $body): Task
 
     } else {
         throw new Exception("La date de fin ne peut pas être nulle.", 400);
-    }
-
-    if (!empty($body->pilot)){
-        $task->setPilotId($body->pilot);
-    } else {
-        throw new Exception("La tache doit être attribué à quelqu'un.", 400);
     }
 
     if (!empty($body->sector)) {
