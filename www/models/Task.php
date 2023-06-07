@@ -19,6 +19,8 @@ class Task extends Database
 
     private string $end_date;
 
+    private int $pilot;
+
     private ?string $sector;
 
     /**
@@ -102,6 +104,22 @@ class Task extends Database
     }
 
     /**
+     * @return int|null
+     */
+    public function getPilotId(): ?int
+    {
+        return $this->pilot;
+    }
+
+    /**
+     * @param int|null $id
+     */
+    public function setPilotId(?int $id): void
+    {
+        $this->pilot = $id;
+    }
+
+    /**
      * @return string|null
      */
     public function getSector(): ?string
@@ -117,11 +135,8 @@ class Task extends Database
         $this->sector = $sector;
     }
 
-
-
-
     /**
-     * Method that add task
+     * Method that change status task
      * 
      * @param int $id
      * @param int $status_column_id
@@ -156,12 +171,16 @@ class Task extends Database
      * Method which creates task, persists in DB and return task object
      *
      * @param Task $task
+     * @param int $project_id
      * @return Task
      * @throws Exception
      */
-    public function create(Task $task): Task
+    public function create(Task $task, int $project_id): Task
     {
         try {
+            $stmtSelectColPos = $this->pdo->prepare("SELECT position FROM status_column WHERE project_id = ? AND title = 'to-do'");
+            $stmtSelectColPos->execute([$project_id]);
+            $col_pos = $stmtSelectColPos->fetch(PDO::FETCH_OBJ);
             $stmt = $this->pdo->prepare("INSERT INTO task (title, description, start_date, end_date, sector, status_column_id, user_id) VALUES (:title, :description, :start_date, :end_date, :sector, :status_column_id, :user_id)");
             $stmt->execute([
                 "title" => $task->getTitle(),
@@ -169,10 +188,9 @@ class Task extends Database
                 "start_date" => $task->getStartDate(),
                 "end_date" => $task->getEndDate(),
                 "sector" => $task->getSector(),
-                "status_column_id" => 1,
-                "user_id" => 1
+                "status_column_id" => $col_pos->position,
+                "user_id" => $task->pilot
             ]);
-
             //get new id and add to task object
             $id = $this->pdo->lastInsertId();
             $task->setId($id);

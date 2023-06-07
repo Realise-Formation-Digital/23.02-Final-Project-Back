@@ -41,11 +41,16 @@ function serializeProjectById(Project $project): array
  */
 function serializeProject(Project $project): array
 {
+    // serialize copil_list
+    $copil_list = [];
+    foreach ($project->getCopilList() as $copil_user) {
+        $copil_list[] = serializeOneUser($copil_user);
+    }
+
     return [
         'id' => $project->getId(),
         'title' => $project->getTitle(),
-        "status" => $project->getStatus(),
-        "copil_list" => $project->getCopilList()
+        "copil_list" => $copil_list
     ];
 }
 
@@ -69,19 +74,11 @@ function deserializeProject(stdClass $body): Project
         throw new Exception("Le titre ne peut pas être nul.", 400);
     }
 
-    if (!empty($body->status)) {
-        $project->setStatus($body->status);
-    } else {
-        throw new Exception("Le status ne peut pas être nul.", 400);
-    }
-
-    if (!empty($body->copil_list)){
+    if (!empty($body->copil_list)) {
         $project->setCopilList($body->copil_list);
     } else {
         throw new Exception(("La liste ne peut être vide"));
     }
 
     return $project;
-
 }
-

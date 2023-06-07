@@ -25,7 +25,10 @@ function search(): array
 function create(stdClass $body): array
 {
     $task = deserializeTask($body);
-    $task = $task->create($task);
+    if(empty($body->project_id)){
+        throw new Exception("Il s'agit de quel Kanban ?", 400);
+    }
+    $task = $task->create($task, $body->project_id);
     return serializeTask($task);
 }
 
@@ -44,7 +47,7 @@ function put(int $id,stdClass $body): array
     return serializeTask($updateTask);
 }
 
-function patch(int $id, stdClass $body): array
+function patch(int $id, stdClass $body)
 { 
     $task = new Task();
     //check if id of body task exist 
