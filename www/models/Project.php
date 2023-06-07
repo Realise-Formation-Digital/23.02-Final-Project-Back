@@ -225,7 +225,7 @@ class Project extends Database
          }
          // recover users as objects
          $users = $this->getUsersByProjectId($id);
-         $prjct->setCopilList($users);
+         $project->setCopilList($users);
 
          // returns change object
          return $project;
@@ -256,5 +256,4 @@ class Project extends Database
             throw $e;
         }
     }
-}
 }
