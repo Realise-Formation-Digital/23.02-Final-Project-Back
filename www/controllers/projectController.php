@@ -18,8 +18,17 @@ function read(int $id)
 }
 
 
-function search()
-{
+function search(): array {
+    $project = new Project();
+    $projects = $project->search();
+    //create empty array to fill with every JSON projects
+    $serializedProjects = [];
+    //Loops through project to get every projects
+    foreach($projects as $project){
+        $serializedProjects[] = serializeProject($project);
+      }
+      return $serializedProjects;
+   
 }
 
 

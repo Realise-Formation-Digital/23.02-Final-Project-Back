@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\models;
 
 use AllowDynamicProperties;
@@ -185,6 +186,35 @@ class Project extends Database
          throw new Exception($e->getMessage(), 500);
       }
    }
+
+
+
+    /**
+     * Method that get all Projects
+     * 
+     */
+    public function search(): array
+    {
+        try {
+            $stmtGetProjects = $this->pdo->prepare("SELECT id, title FROM project WHERE status = :status");
+            $stmtGetProjects->execute([
+                'status' => 'inProgress'
+            ]);
+            //SET all attributes class 
+            $projects = $stmtGetProjects->fetchAll(PDO::FETCH_CLASS, "App\models\Project");
+
+            //loops through project table and GET users's ids for each project
+            foreach ($projects as $project){
+               //obtain project and users ids
+               $users = $project->getUsersByProjectId($project->getId());
+               //add object user to project
+               $project->setCopilList($users);
+            }
+            return $projects;
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+    }
 
 
 
