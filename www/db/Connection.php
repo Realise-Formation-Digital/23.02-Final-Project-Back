@@ -1,14 +1,16 @@
 <?php
 namespace App\db;
 require_once '../vendor/autoload.php';
-
 use Exception;
 use PDO;
 
+\Dotenv\Dotenv::create(__DIR__)->load();
+
+dump(getenv());
+
 // require_once("../config.php");
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv ->  load();
+
 
 
 
