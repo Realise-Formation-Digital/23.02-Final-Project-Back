@@ -1,4 +1,5 @@
 <?php
+
 namespace App\models;
 
 use AllowDynamicProperties;
@@ -106,14 +107,15 @@ class Project extends Database
      * @return Project
      * @throws Exception
      */
-    public function read(int $id): Project {
+    public function read(int $id): Project
+    {
         try {
             // get project
             $stmt = $this->pdo->prepare('SELECT * FROM project WHERE id = :id');
             $stmt->execute([
                 'id' => $id
             ]);
-            $project = $stmt->fetchObject( Project::class);
+            $project = $stmt->fetchObject(Project::class);
 
             if (!$project) {
                 throw new Exception("Le projet d'id $id n'existe pas.", 400);
@@ -124,7 +126,7 @@ class Project extends Database
             $stmt->execute([
                 'project_id' => $id
             ]);
-            $users = $stmt->fetchAll( PDO::FETCH_CLASS, User::class);
+            $users = $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
 
             //add users to project
             $project->setCopilList($users);
@@ -134,46 +136,45 @@ class Project extends Database
             $stmt->execute([
                 'project_id' => $id
             ]);
-            $status_columns = $stmt->fetchAll( PDO::FETCH_CLASS, StatusColumn::class);
+            $status_columns = $stmt->fetchAll(PDO::FETCH_CLASS, StatusColumn::class);
 
             // add tasks to columns
-            foreach($status_columns as &$status_column) {
+            foreach ($status_columns as &$status_column) {
                 //get tasks for 1 column
                 $stmt = $this->pdo->prepare('SELECT * FROM task WHERE status_column_id = :status_column_id ORDER BY end_date ASC');
                 $stmt->execute([
                     'status_column_id' => $status_column->getId()
                 ]);
-                $tasks = $stmt->fetchAll( PDO::FETCH_CLASS, Task::class);
+                $tasks = $stmt->fetchAll(PDO::FETCH_CLASS, Task::class);
 
                 // add tasks to column
                 $status_column->setTasks($tasks);
             }
-             // add columns to project
-             $project->setStatusColumns($status_columns);
-             return $project;
-         } catch (Exception $e) {
-             throw $e;
-         }
-     }
+            // add columns to project
+            $project->setStatusColumns($status_columns);
+            return $project;
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
 
 
-/**
- * Method that get all Projects- param function = columns table
- * 
- */
-public function getProjets(){
-    try{
-    $stmtGetProjects = $this->pdo->prepare("SELECT id, title FROM project WHERE status = :status");
-    $stmtGetProjects->execute([
+    /**
+     * Method that get all Projects- param function = columns table
+     * 
+     */
+    public function search()
+    {
+        try {
+            $stmtGetProjects = $this->pdo->prepare("SELECT id, title FROM project WHERE status = :status");
+            $stmtGetProjects->execute([
                 'status' => 'inProgress'
             ]);
-    /***/
-    return $stmtGetProjects->fetchAll(PDO::FETCH_CLASS, "App\models\Projets");
-}
-catch(Exception $e){
-    throw new Exception($e);
-}
-}
+            return $stmtGetProjects->fetchAll(PDO::FETCH_CLASS, "App\models\Project");
+        } catch (Exception $e) {
+            throw new Exception($e);
+        }
+    }
 
 
 
@@ -198,7 +199,7 @@ catch(Exception $e){
             ]);
             $stmtDelete = $this->pdo->prepare("DELETE FROM project_user WHERE project_id= ?");
             $stmtDelete->execute([$id]);
-            foreach($project->copil_list as $pilot){   
+            foreach ($project->copil_list as $pilot) {
                 $stmtInsert = $this->pdo->prepare("INSERT INTO project_user (project_id, user_id) VALUES (:project_id, :user_id)");
                 $stmtInsert->execute([
                     "project_id" => $id,
@@ -210,6 +211,4 @@ catch(Exception $e){
             throw $e;
         }
     }
-
-         
 }

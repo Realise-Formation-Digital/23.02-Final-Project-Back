@@ -19,7 +19,9 @@ function read(int $id)
 
 
 function search(): array {
-
+    $project = new Project();
+    $project = $project->search();
+    return [];
 }
 
 
