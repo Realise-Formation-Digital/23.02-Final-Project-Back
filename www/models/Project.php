@@ -113,12 +113,8 @@ class Project extends Database
          // TESTS IF THE PROJECT EXISTS IN THE DATABASE
          $project = $this->getProjectById($id);
 
-            // get users (= copil list) from project
-            $stmt = $this->pdo->prepare('SELECT user.id, user.last_name, user.first_name, user.image FROM project_user JOIN user ON project_user.user_id = user.id WHERE project_user.project_id = :project_id');
-            $stmt->execute([
-                'project_id' => $id
-            ]);
-            $users = $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
+         // get users (= copil list) from project
+         $users = $this->getUsersByProjectId($id);
 
          //add users to project
          $project->setCopilList($users);
