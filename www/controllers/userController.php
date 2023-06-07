@@ -19,7 +19,7 @@ function search(): array
 {
    $user = new User();
    $user_data = $user->search_users();
-   $user_tab = serializeUsersList($user_data);
+   $user_tab[] = serializeUsersList($user_data);
 
    return $user_tab;
 }

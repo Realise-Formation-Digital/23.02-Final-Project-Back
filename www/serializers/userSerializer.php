@@ -8,7 +8,7 @@ use App\models\User;
  * @param  array $users
  * @return void
  */
-function serializeUser(array $users)
+function serializeUsersList(array $users): array
 {
    $user_tab = [];
    foreach ($users as $u) {
@@ -23,7 +23,7 @@ function serializeUser(array $users)
  * @param  Class $user
  * @return array
  */
-function serializeOneUser(User $user): array
+function serializeUser(User $user): array
 {
    return [
       "id" => $user->get_id(),
