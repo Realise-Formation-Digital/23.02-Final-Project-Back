@@ -197,38 +197,29 @@ class Project extends Database
    }
 
 
+
     /**
-     * Method that get all Projects- param function = columns table
+     * Method that get all Projects
      * 
      */
-    public function search()
+    public function search(): array
     {
         try {
             $stmtGetProjects = $this->pdo->prepare("SELECT id, title FROM project WHERE status = :status");
             $stmtGetProjects->execute([
                 'status' => 'inProgress'
             ]);
+            //SET all attributes class 
             $projects = $stmtGetProjects->fetchAll(PDO::FETCH_CLASS, "App\models\Project");
-            dump($projects);
-        } catch (Exception $e) {
-            throw new Exception($e);
-        }
-    }
 
-
-    /**
-     * Method that get all Projects- param function = columns table
-     * 
-     */
-    public function search()
-    {
-        try {
-            $stmtGetProjects = $this->pdo->prepare("SELECT id, title FROM project WHERE status = :status");
-            $stmtGetProjects->execute([
-                'status' => 'inProgress'
-            ]);
-            $projects = $stmtGetProjects->fetchAll(PDO::FETCH_CLASS, "App\models\Project");
-            dump($projects);
+            //loops through project table and GET users's ids for each project
+            foreach ($projects as $project){
+               //obtain project and users ids
+               $users = $project->getUsersByProjectId($project->getId());
+               //add object user to project
+               $project->setCopilList($users);
+            }
+            return $projects;
         } catch (Exception $e) {
             throw new Exception($e);
         }

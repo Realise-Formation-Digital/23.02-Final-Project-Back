@@ -144,18 +144,17 @@ class Task extends Database
      */
     public function patch(int $id, int $status_column_id){
         try{
-            /**/
+            /*fetch and map id from task*/
             $stmtFetch = $this->pdo->prepare("SELECT * FROM task WHERE id=:id");
             $stmtFetch-> execute([
                 "id" => $id,
             ]);
-
             $task = $stmtFetch->fetch(PDO::FETCH_OBJ);
-
+            //error message if id doesn't exist
             if(!$task==true){
                 throw new Exception('Cette tache nexiste pas', 400);
             }
-
+    
             $stmtUpdate = $this->pdo->prepare("UPDATE task SET status_column_id=:status_column_id WHERE id = :id");
             $stmtUpdate->execute ([
                 "id" => $id,
