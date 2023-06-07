@@ -5,11 +5,24 @@ require_once("../serializers/projectSerializer.php");
 require_once("./baseController.php");
 
 use App\models\Project;
+use OpenApi\Attributes as OA;
 
 
 /**
+ * 
  * @throws Exception
  */
+#[OA\Get(
+    path:"/projects/id",
+    #[OA\Response(
+        response:"200",
+        description:"Kanban unique",
+        #[OA\JsonContent(
+            type:"string",
+            description:"titre du projet"
+        ),]
+    ),]
+)]
 function read(int $id)
 {
     $project = new Project();
