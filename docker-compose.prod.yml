@@ -18,6 +18,7 @@ services:
     container_name : kanban_server_prod
     # Use custom image based on php-apache official image
     build:
+      context: .
       dockerfile: Dockerfile.prod
     # Run the services as the same user as the host's one, or as user with uid 1000
     user: "${UID:-1001}:${GID:-1001}"
