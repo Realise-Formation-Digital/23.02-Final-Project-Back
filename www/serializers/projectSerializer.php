@@ -70,13 +70,23 @@ function deserializeProject(stdClass $body): Project
         throw new Exception("Le titre ne peut pas être nul.", 400);
     }
 
-
     // IF THE COPIL LIST IS EMPTY, THROW AN ERROR
     if (!empty($body->copil_list)) {
-        $project->setCopilList($body->copil_list);
+        $listUsersCheck = checkDistinctPilot($body->copil_list);
+        $project->setCopilList($listUsersCheck);
     } else {
         throw new Exception("La liste CoPil est obligatoire.", 400);
     }
 
     return $project;
+}
+
+/**
+ * fonction qui control la selection des utilisateurs qu'ils soient bien distinct
+ * @param array
+ * @return array
+ */
+function checkDistinctPilot(array $array){
+    $distinctValues = array_unique($array);
+    return $distinctValues;
 }
