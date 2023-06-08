@@ -11,5 +11,4 @@ WORKDIR /var/www/html
 
 COPY ./www .
 
-RUN composer install
-RUN composer dump-autoload
+RUN composer install --no-dev --optimize-autoloader
