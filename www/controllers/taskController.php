@@ -34,10 +34,12 @@ function create(stdClass $body): array
 //    echo "Today is " . date("Y/m/d") . "<br>";
 
 
-
+    $checkStartDate->getStartDate();
+    $checkEndDate->getEndDate();
     //StartDate must be previous to EndDate, if yes set date
-    if ($body->getStartDate & ->getEndDate) {
-    $this=start_date<$this=end_date
+    if ($body->$checkStartDate & ->$checkEndDate){
+    $checkStartDate<$checkEndDate;
+    return ["message les dates selectionnées ont bien été crées"]
     } else {
     throw new Exception("La date de début de la tâche doit précéder la date de fin.", 400);
     }
