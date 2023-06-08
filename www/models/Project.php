@@ -380,14 +380,20 @@ class Project extends Database
       }
    }
 
-   private function getUsersByProjectId(int $projectId): array
+   public function getUsersByProjectId(int $projectId): array
    {
-      // get users (= copil list) from project
-      $stmt = $this->pdo->prepare('SELECT user.id, user.last_name, user.first_name, user.image FROM project_user JOIN user ON project_user.user_id = user.id WHERE project_user.project_id = :project_id');
-      $stmt->execute([
-         'project_id' => $projectId
-      ]);
-      return $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
+      try {
+         // get users (= copil list) from project
+         $stmt = $this->pdo->prepare('SELECT user.id, user.last_name, user.first_name, user.image FROM project_user JOIN user ON project_user.user_id = user.id WHERE project_user.project_id = :project_id');
+         $stmt->execute([
+            'project_id' => $projectId
+         ]);
+         
+         return $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
+      } catch (Exception $e) {
+         throw new Exception($e->getMessage(), 500);
+      }
+   }
    }
 
     /**
