@@ -58,7 +58,8 @@ function put(int $id, stdClass $body): array
     if (empty($body->pilot)) {
         throw new Exception("La tache doit être attribué à quelqu'un.", 400);
     }
-    $updateTask = $task->update($id, $task, $body->pilot);
+
+    $updateTask = $task->update($id, $task, $body->project_id, $body->pilot);
     return serializeTask($updateTask);
 }
 
