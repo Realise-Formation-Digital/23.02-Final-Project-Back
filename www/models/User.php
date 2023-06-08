@@ -66,8 +66,26 @@ class User extends Database
       $this->image = $img;
    }
 
-   // SEARCH ALL FUNCTION -----
-   public function search_users(): array
+    /**
+     * Get all users
+     *
+     * @return array
+     * @throws Exception
+     */
+    #[OA\Get(
+        path: '/users',
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Get all users',
+        content: new OA\JsonContent(
+            type: "array",
+            items: new OA\Items(
+                ref: '#/components/schemas/User',
+            )
+        )
+    )]
+    public function search_users(): array
    {
       try {
          // prepare statement TO GET THE USERS FROM DATABASE ORDERED BY LAST NAME AND FIRST NAME

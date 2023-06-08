@@ -133,11 +133,14 @@
                 "operationId": "1569ab001ca1f74564f8b14dea65f88f",
                 "responses": {
                     "200": {
-                        "description": "Get project by id",
+                        "description": "Get all projects",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Project"
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Project"
+                                    }
                                 }
                             }
                         }
@@ -175,6 +178,27 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Project"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "summary": "Get all users",
+                "operationId": "0829ffd6f32e36159d9a194a6672b340",
+                "responses": {
+                    "200": {
+                        "description": "Get all users",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
                                 }
                             }
                         }

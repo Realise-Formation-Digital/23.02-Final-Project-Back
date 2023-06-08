@@ -265,9 +265,12 @@ class Project extends Database
     )]
     #[OA\Response(
         response: 200,
-        description: 'Get project by id',
+        description: 'Get all projects',
         content: new OA\JsonContent(
-            ref: '#/components/schemas/Project'
+            type: "array",
+            items: new OA\Items(
+                ref: '#/components/schemas/Project',
+            )
         )
     )]
     public function search(): array
