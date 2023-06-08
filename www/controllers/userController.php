@@ -15,13 +15,15 @@ function read(int $id)
  * Search users in the database and converts it into JSON
  * returns an array 
  */
-function search(): array
+function search()
 {
    $user = new User();
    $user_data = $user->search_users();
    $user_tab[] = serializeUsersList($user_data);
 
-   return $user_tab;
+   // SINCE WE CALL THE SERIALIZE FUNCTIONS TWICE WE HAD AN ISSUE WITH THE RETURN WHERE THERE WAS A TAB
+   // SO WE NEED TO SEND THE TAB INSIDE TOWARDS THE JSON CONVERTER. THEREFOR, THE [0] IN RETURN
+   return $user_tab[0];
 }
 
 
