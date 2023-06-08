@@ -28,6 +28,12 @@ function serializeUser(array $users)
    }
 }
 
+/**
+ * serializeOneUser
+ *
+ * @param  mixed $user
+ * @return array
+ */
 function serializeOneUser(User $user): array
 {
     return [
