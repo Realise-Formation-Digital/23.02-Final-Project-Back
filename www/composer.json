@@ -13,6 +13,8 @@
     "require": {
         "symfony/var-dumper": "^6.3",
         "ext-pdo": "*",
-        "vlucas/phpdotenv": "^5.5"
+        "vlucas/phpdotenv": "^5.5",
+        "zircote/swagger-php": "^4.7"
+
     }
 }
