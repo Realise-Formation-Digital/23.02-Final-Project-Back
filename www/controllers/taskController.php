@@ -29,10 +29,10 @@ function create(stdClass $body): array
     if (empty($body->pilot)) {
         throw new Exception("La tache doit être attribué à quelqu'un.", 400);
     }
+
     $task = $task->create($task, $body->project_id, $body->pilot);
     return serializeTask($task);
 }
-
 
 /**
  * update une tache
