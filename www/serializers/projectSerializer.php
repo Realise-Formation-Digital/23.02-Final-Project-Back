@@ -21,10 +21,7 @@ function serializeProjectById(Project $project): array
     }
 
     // serialize copil_list
-    $copil_list = [];
-    foreach ($project->getCopilList() as $copil_user) {
-        $copil_list[] = serializeOneUser($copil_user);
-    }
+    $copil_list = serializeUsersList($project->getCopilList());
 
     return [
         'id' => $project->getId(),
@@ -42,10 +39,8 @@ function serializeProjectById(Project $project): array
 function serializeProject(Project $project): array
 {
     // serialize copil_list
-    $copil_list = [];
-    foreach ($project->getCopilList() as $copil_user) {
-        $copil_list[] = serializeOneUser($copil_user);
-    }
+    $copil_list = serializeUsersList($project->getCopilList());
+
 
     return [
         'id' => $project->getId(),
@@ -64,21 +59,51 @@ function deserializeProject(stdClass $body): Project
 {
     $project = new Project();
 
+    // IF THE TITLE IS EMPTY, THROW AN ERROR
     if (!empty($body->title)) {
         $project->setTitle($body->title);
 
         if (strlen($body->title) > 250) {
-            throw new Exception("Le titre ne peut pas avoir plus que 100 caractères.", 400);
+            throw new Exception("Le titre ne peut pas avoir plus que 250 caractères.", 400);
         }
     } else {
         throw new Exception("Le titre ne peut pas être nul.", 400);
     }
 
+    // IF THE COPIL LIST IS EMPTY, THROW AN ERROR
     if (!empty($body->copil_list)) {
-        $project->setCopilList($body->copil_list);
+        $listUsersCheck = checkDistinctPilot($body->copil_list);
+        if (arrayHasOnlyInts($body->copil_list)) {
+            $project->setCopilList($listUsersCheck);
+        } else {
+            throw new Exception("La liste CoPil doit être des nombres.", 400);
+        }
     } else {
-        throw new Exception(("La liste ne peut être vide"));
+        throw new Exception("La liste CoPil est obligatoire.", 400);
     }
 
     return $project;
+}
+
+/**
+ * arrayHasOnlyInts
+ *
+ * @param  array $list
+ * @return bool
+ */
+function arrayHasOnlyInts(array $list): bool
+{
+    $nonints = preg_grep('/\D/', $list); // returns array of elements with non-ints
+    return (count($nonints) == 0); // if array has 0 elements, there's no non-ints
+}
+
+/**
+ * fonction qui control la selection des utilisateurs qu'ils soient bien distinct
+ * @param array
+ * @return array
+ */
+function checkDistinctPilot(array $array)
+{
+    $distinctValues = array_unique($array);
+    return $distinctValues;
 }

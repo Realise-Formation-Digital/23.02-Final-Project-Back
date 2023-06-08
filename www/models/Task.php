@@ -5,8 +5,21 @@ namespace App\models;
 use AllowDynamicProperties;
 use Exception;
 use PDO;
+use OpenApi\Attributes as OA;
 
 #[AllowDynamicProperties]
+#[OA\Schema(
+    schema: "Task",
+    properties: [
+        new OA\Property(property: "id", type: "integer"),
+        new OA\Property(property: "title", type: "string"),
+        new OA\Property(property: "description", type: "string"),
+        new OA\Property(property: "start_date", type: "date"),
+        new OA\Property(property: "end_date", type: "date"),
+        new OA\Property(property: "pilot", ref: "#/components/schemas/User"),
+        new OA\Property(property: "sector", type: "string")
+    ]
+)]
 class Task extends Database
 {
     private ?int $id;
@@ -19,7 +32,7 @@ class Task extends Database
 
     private string $end_date;
 
-    private int $pilot;
+    private User $pilot;
 
     private ?string $sector;
 
@@ -104,19 +117,19 @@ class Task extends Database
     }
 
     /**
-     * @return int|null
+     * @return User
      */
-    public function getPilotId(): ?int
+    public function getPilot(): User
     {
         return $this->pilot;
     }
 
     /**
-     * @param int|null $id
+     * @param User $pilot
      */
-    public function setPilotId(?int $id): void
+    public function setPilot(User $pilot): void
     {
-        $this->pilot = $id;
+        $this->pilot = $pilot;
     }
 
     /**
@@ -136,118 +149,329 @@ class Task extends Database
     }
 
     /**
-     * Method that change status task
+     * Patch task by id (change task column)
      * 
      * @param int $id
      * @param int $status_column_id
      * @throws Exception
      */
-    public function patch(int $id, int $status_column_id){
-        try{
-            /**/
+    #[OA\Patch(
+        path: '/tasks/{id}',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: "Task id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(
+            type: "integer"
+        )
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: "new_status_column_id",
+                    type: "integer",
+                )
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Patch task by id',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "message", type: "string", example: "Le tâche a bien changé de colonne")
+            ]
+        )
+    )]
+    public function patch(int $id, int $status_column_id)
+    {
+        try {
+            /*fetch and map id from task*/
             $stmtFetch = $this->pdo->prepare("SELECT * FROM task WHERE id=:id");
-            $stmtFetch-> execute([
+            $stmtFetch->execute([
                 "id" => $id,
             ]);
-
             $task = $stmtFetch->fetch(PDO::FETCH_OBJ);
-
-            if(!$task==true){
+            //error message if id doesn't exist
+            if (!$task == true) {
                 throw new Exception('Cette tache nexiste pas', 400);
             }
 
             $stmtUpdate = $this->pdo->prepare("UPDATE task SET status_column_id=:status_column_id WHERE id = :id");
-            $stmtUpdate->execute ([
+            $stmtUpdate->execute([
                 "id" => $id,
-                "status_column_id" =>$status_column_id
+                "status_column_id" => $status_column_id
             ]);
-        }catch (Exception $e){
+        } catch (Exception $e) {
             throw $e;
         }
     }
 
 
-
     /**
-     * Method which creates task, persists in DB and return task object
+     * Create a task
      *
      * @param Task $task
      * @param int $project_id
+     * @param int $user_id
      * @return Task
      * @throws Exception
      */
-    public function create(Task $task, int $project_id): Task
+    #[OA\Post(
+        path: '/tasks',
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: "title",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "description",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "start_date",
+                    type: "date",
+                ),
+                new OA\Property(
+                    property: "end_date",
+                    type: "date",
+                ),
+                new OA\Property(
+                    property: "pilot",
+                    type: "integer",
+                ),
+                new OA\Property(
+                    property: "sector",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "project_id",
+                    type: "integer",
+                ),
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Create task',
+        content: new OA\JsonContent(
+            ref: '#/components/schemas/Task'
+        )
+    )]
+    public function create(Task $task, int $project_id, int $user_id): Task
     {
         try {
-            $stmtSelectColPos = $this->pdo->prepare("SELECT position FROM status_column WHERE project_id = ? AND title = 'to-do'");
-            $stmtSelectColPos->execute([$project_id]);
-            $col_pos = $stmtSelectColPos->fetch(PDO::FETCH_OBJ);
-            $stmt = $this->pdo->prepare("INSERT INTO task (title, description, start_date, end_date, sector, status_column_id, user_id) VALUES (:title, :description, :start_date, :end_date, :sector, :status_column_id, :user_id)");
-            $stmt->execute([
-                "title" => $task->getTitle(),
-                "description" => $task->getDescription(),
-                "start_date" => $task->getStartDate(),
-                "end_date" => $task->getEndDate(),
-                "sector" => $task->getSector(),
-                "status_column_id" => $col_pos->position,
-                "user_id" => $task->pilot
-            ]);
-            //get new id and add to task object
-            $id = $this->pdo->lastInsertId();
-            $task->setId($id);
+            // GET THE LIST OF USERS WHO WERE ASSIGNED TO THE PROJECT WE'RE TRYING TO ADD THE TASK TO
+            $associatedProject = new Project;
+            $projectCopil[] = $associatedProject->getUsersByProjectId($project_id);
+            $userIdList = [];
 
-            return $task;
+            // ISOLATES THE USER IDS FROM THE COPIL LIST
+            foreach ($projectCopil[0] as $user) {
+                $userIdList[] = $user->get_id();
+            }
+
+            // CHECKS IF THE USERS EXIST IN THE PROJECT, IF IT DOESNT THROW AN ERROR
+            if (array_search($user_id, $userIdList) === false) {
+                throw new Exception("Le pilote choisi n'appartient pas à ce projet, veuillez en choisir un valide.", 400);
+            } else {
+                $stmtSelectColPos = $this->pdo->prepare("SELECT id FROM status_column WHERE project_id = ? AND title = 'toDo'");
+                $stmtSelectColPos->execute([$project_id]);
+                $col_pos = $stmtSelectColPos->fetch(PDO::FETCH_OBJ);
+
+                $stmt = $this->pdo->prepare("INSERT INTO task (title, description, start_date, end_date, sector, status_column_id, user_id) VALUES (:title, :description, :start_date, :end_date, :sector, :status_column_id, :user_id)");
+                $stmt->execute([
+                    "title" => $task->getTitle(),
+                    "description" => $task->getDescription(),
+                    "start_date" => $task->getStartDate(),
+                    "end_date" => $task->getEndDate(),
+                    "sector" => $task->getSector(),
+                    "status_column_id" => $col_pos->id,
+                    "user_id" => $user_id
+                ]);
+
+                //get new id and add to task object
+                $id = $this->pdo->lastInsertId();
+                $task->setId($id);
+
+                //get pilot
+                $stmt = $this->pdo->prepare('SELECT * FROM user WHERE id = :user_id');
+                $stmt->execute([
+                    'user_id' => $user_id
+                ]);
+
+                //add pilot to task
+                $pilot = $stmt->fetchObject(User::class);
+
+                //add pilot to task
+                $task->setPilot($pilot);
+
+                return $task;
+            }
         } catch (Exception $e) {
             throw $e;
         }
     }
 
+
     /**
-     * Method which update task, persists in DB and return task object
+     * Update task
      *
      * @param int $id
      * @param Task $task
+     * @param int $project_id
+     * @param int $user_id
      * @return Task
      * @throws Exception
      */
-    public function update(int $id, Task $task): Task
+    #[OA\Put(
+        path: '/tasks/{id}',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: "Task id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(
+            type: "integer"
+        )
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: "title",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "description",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "start_date",
+                    type: "date",
+                ),
+                new OA\Property(
+                    property: "end_date",
+                    type: "date",
+                ),
+                new OA\Property(
+                    property: "pilot",
+                    type: "integer",
+                ),
+                new OA\Property(
+                    property: "sector",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "project_id",
+                    type: "integer",
+                )
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Update task by id',
+        content: new OA\JsonContent(
+            ref: '#/components/schemas/Task'
+        )
+    )]
+    public function update(int $id, Task $task, int $project_id, int $user_id): Task
     {
         try {
-            $this->setId($id);
-            $stmt = $this->pdo->prepare("UPDATE task SET title= :title, description= :description, start_date= :start_date, end_date= :end_date, sector= :sector, status_column_id= :status_column_id, user_id= :user_id WHERE id= :id");
-            $stmt->execute([
-                "title" => $task->getTitle(),
-                "description" => $task->getDescription(),
-                "start_date" => $task->getStartDate(),
-                "end_date" => $task->getEndDate(),
-                "sector" => $task->getSector(),
-                "status_column_id" => 1,
-                "user_id" => 1,
-                "id" => $id
-            ]);
-            
-            return $task;
+            // GET THE LIST OF USERS WHO WERE ASSIGNED TO THE PROJECT WE'RE TRYING TO ADD THE TASK TO
+            $associatedProject = new Project;
+            $projectCopil[] = $associatedProject->getUsersByProjectId($project_id);
+            $userIdList = [];
+
+            // ISOLATES THE USER IDS FROM THE COPIL LIST
+            foreach ($projectCopil[0] as $user) {
+                $userIdList[] = $user->get_id();
+            }
+
+            // CHECKS IF THE USERS EXIST IN THE PROJECT, IF IT DOESNT THROW AN ERROR
+            if (array_search($user_id, $userIdList) === false) {
+                throw new Exception("Le pilote choisi n'appartient pas à ce projet, veuillez en choisir un valide.", 400);
+            } else {
+                $this->setId($id);
+
+                $stmt = $this->pdo->prepare("UPDATE task SET title= :title, description= :description, start_date= :start_date, end_date= :end_date, sector= :sector, user_id= :user_id WHERE id= :id");
+                $stmt->execute([
+                    "title" => $task->getTitle(),
+                    "description" => $task->getDescription(),
+                    "start_date" => $task->getStartDate(),
+                    "end_date" => $task->getEndDate(),
+                    "sector" => $task->getSector(),
+                    "user_id" => $user_id,
+                    "id" => $id
+                ]);
+
+                //get pilot
+                $stmt = $this->pdo->prepare('SELECT * FROM user WHERE id = :user_id');
+                $stmt->execute([
+                    'user_id' => $user_id
+                ]);
+
+                //add pilot to task
+                $pilot = $stmt->fetchObject(User::class);
+
+                //add pilot to task
+                $task->setPilot($pilot);
+
+                return $task;
+            }
         } catch (Exception $e) {
             throw $e;
         }
     }
 
     /**
-     * delete task
-     * @param string $id
+     * Delete task
+     *
+     * @param $id
+     * @return string[]
+     * @throws Exception
      */
-    public function delete($id){
-        try{  
+    #[OA\Delete(
+        path: '/tasks/{id}',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: "Task id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(
+            type: "integer"
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Delete task by id',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "message", type: "string", example: "La tâche a été correctement supprimée")
+            ]
+        )
+    )]
+    public function delete($id)
+    {
+        try {
 
             $stmt = $this->pdo->prepare("DELETE FROM task WHERE id=?");
             $stmt->execute([$id]);
             return ["message" => "La tache a été correctement supprimée"];
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
-        
-    
     }
 }
-
-?>

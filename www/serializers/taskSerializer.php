@@ -1,6 +1,7 @@
 <?php
 
 require_once("../vendor/autoload.php");
+require_once("../serializers/userSerializer.php");
 
 use App\models\Task;
 
@@ -12,12 +13,14 @@ use App\models\Task;
  */
 function serializeTask(Task $task): array
 {
+    $user = serializeUser($task->getPilot());
     return [
         'id' => $task->getId(),
         'title' => $task->getTitle(),
         "description" => $task->getDescription(),
         "start_date" => $task->getStartDate(),
         "end_date" => $task->getEndDate(),
+        "pilot" => $user,
         "sector" => $task->getSector()
     ];
 }
@@ -32,8 +35,9 @@ function serializeTask(Task $task): array
  */
 function deserializeTask(stdClass $body): Task
 {
+
     $task = new Task();
-    
+
     if (!empty($body->title)) {
         $task->setTitle($body->title);
 
@@ -54,32 +58,27 @@ function deserializeTask(stdClass $body): Task
         throw new Exception("La description ne peut pas être nulle.", 400);
     }
 
+    $result = checkOrderDate($body->start_date, $body->end_date);
+    if (!$result) {
+        throw new Exception("La date de début de la tâche doit précéder la date de fin.");
+    }
+
     if (!empty($body->start_date)) {
-        $task->setStartDate($body->start_date);
-
         test_date($body->start_date);
-
+        $task->setStartDate($body->start_date);
     } else {
         throw new Exception("La date de début ne peut pas être nulle.", 400);
     }
 
     if (!empty($body->end_date)) {
-        $task->setEndDate($body->end_date);
-
         test_date($body->end_date);
-
+        $task->setEndDate($body->end_date);
     } else {
         throw new Exception("La date de fin ne peut pas être nulle.", 400);
     }
 
-    if (!empty($body->pilot)){
-        $task->setPilotId($body->pilot);
-    } else {
-        throw new Exception("La tache doit être attribué à quelqu'un.", 400);
-    }
-
     if (!empty($body->sector)) {
-        if ($body->sector!="blanchisserie" && $body->sector!="horlogerie" && $body->sector!="jardinerie" && $body->sector!="nettoyage" && $body->sector!="administration" && $body->sector!="informatique"){
+        if ($body->sector != "blanchisserie" && $body->sector != "horlogerie" && $body->sector != "jardinerie" && $body->sector != "nettoyage" && $body->sector != "administration" && $body->sector != "informatique") {
             throw new Exception("Ce secteur n'existe pas.", 400);
         }
         $task->setSector($body->sector);
@@ -97,11 +96,18 @@ function deserializeTask(stdClass $body): Task
  * @return void
  * @throws Exception
  */
-function test_date(string $date): void {
+function test_date(string $date): void
+{
     $format = "Y-m-d";
-    if(date($format, strtotime($date)) != date($date)) {
+    if (date($format, strtotime($date)) != date($date)) {
         throw new Exception("La date doit être valide et au format YYYY-MM-DD. Exemple: 2023-06-05", 400);
     }
 }
-
-
+function checkOrderDate($starDate, $endDate)
+{
+    if ($starDate < $endDate) {
+        return true;
+    } else {
+        return false;
+    }
+}
