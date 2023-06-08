@@ -149,12 +149,44 @@ class Task extends Database
     }
 
     /**
-     * Method that change status task
+     * Patch task by id (change task column)
      * 
      * @param int $id
      * @param int $status_column_id
      * @throws Exception
      */
+    #[OA\Patch(
+        path: '/tasks/{id}',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: "Task id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(
+            type: "integer"
+        )
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: "new_status_column_id",
+                    type: "integer",
+                )
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Patch task by id',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "message", type: "string", example: "Le tâche a bien changé de colonne")
+            ]
+        )
+    )]
     public function patch(int $id, int $status_column_id)
     {
         try {
@@ -181,7 +213,7 @@ class Task extends Database
 
 
     /**
-     * Method which creates task, persists in DB and return task object
+     * Create a task
      *
      * @param Task $task
      * @param int $project_id
@@ -189,6 +221,51 @@ class Task extends Database
      * @return Task
      * @throws Exception
      */
+    #[OA\Post(
+        path: '/tasks',
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: "title",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "description",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "start_date",
+                    type: "date",
+                ),
+                new OA\Property(
+                    property: "end_date",
+                    type: "date",
+                ),
+                new OA\Property(
+                    property: "pilot",
+                    type: "integer",
+                ),
+                new OA\Property(
+                    property: "sector",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "project_id",
+                    type: "integer",
+                ),
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Create task',
+        content: new OA\JsonContent(
+            ref: '#/components/schemas/Task'
+        )
+    )]
     public function create(Task $task, int $project_id, int $user_id): Task
     {
         try {
@@ -246,14 +323,69 @@ class Task extends Database
 
 
     /**
-     * Method which update task, persists in DB and return task object
+     * Update task
      *
-     * @param  mixed $id
-     * @param  mixed $task
-     * @param  mixed $project_id
-     * @param  mixed $user_id
+     * @param int $id
+     * @param Task $task
+     * @param int $project_id
+     * @param int $user_id
      * @return Task
+     * @throws Exception
      */
+    #[OA\Put(
+        path: '/tasks/{id}',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: "Task id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(
+            type: "integer"
+        )
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: "title",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "description",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "start_date",
+                    type: "date",
+                ),
+                new OA\Property(
+                    property: "end_date",
+                    type: "date",
+                ),
+                new OA\Property(
+                    property: "pilot",
+                    type: "integer",
+                ),
+                new OA\Property(
+                    property: "sector",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "project_id",
+                    type: "integer",
+                )
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Update task by id',
+        content: new OA\JsonContent(
+            ref: '#/components/schemas/Task'
+        )
+    )]
     public function update(int $id, Task $task, int $project_id, int $user_id): Task
     {
         try {
@@ -304,9 +436,33 @@ class Task extends Database
     }
 
     /**
-     * delete task
-     * @param string $id
+     * Delete task
+     *
+     * @param $id
+     * @return string[]
+     * @throws Exception
      */
+    #[OA\Delete(
+        path: '/tasks/{id}',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: "Task id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(
+            type: "integer"
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Delete task by id',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "message", type: "string", example: "La tâche a été correctement supprimée")
+            ]
+        )
+    )]
     public function delete($id)
     {
         try {
