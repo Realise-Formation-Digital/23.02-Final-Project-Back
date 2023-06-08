@@ -73,7 +73,7 @@ function deserializeProject(stdClass $body): Project
 
     // IF THE COPIL LIST IS EMPTY, THROW AN ERROR
     if (!empty($body->copil_list)) {
-        if ($project->arrayHasOnlyInts($body->copil_list)) {
+        if (arrayHasOnlyInts($body->copil_list)) {
             $project->setCopilList($body->copil_list);
         } else {
             throw new Exception("La liste CoPil doit être des nombres.", 400);
@@ -83,4 +83,16 @@ function deserializeProject(stdClass $body): Project
     }
 
     return $project;
+}
+
+/**
+ * arrayHasOnlyInts
+ *
+ * @param  array $list
+ * @return bool
+ */
+function arrayHasOnlyInts(array $list): bool
+{
+    $nonints = preg_grep('/\D/', $list); // returns array of elements with non-ints
+    return (count($nonints) == 0); // if array has 0 elements, there's no non-ints
 }

@@ -312,9 +312,4 @@ class Project extends Database
          throw new Exception($e->getMessage(), 500);
       }
    }
-   public function arrayHasOnlyInts($list)
-   {
-      $nonints = preg_grep('/\D/', $list); // returns array of elements with non-ints
-      return (count($nonints) == 0); // if array has 0 elements, there's no non-ints
-   }
 }
