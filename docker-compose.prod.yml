@@ -1,0 +1,30 @@
+version: "3.3"
+
+services:
+  maria_db:
+    container_name: kanban_mariadb_prod
+    image: mariadb:latest # version de l'image mysql
+    volumes:
+      - ./data_db:/var/lib/mariadb # où seront stockée les données en local
+      - ./db:/docker-entrypoint-initdb.d # ajout automatique à la DB des fichiers du dossier db
+    environment:
+      MYSQL_ROOT_PASSWORD: password # mot de passe root
+      MYSQL_DATABASE: kanban_db # le nom de la db
+      MYSQL_USER: user # votre nom d'utilisateur
+      MYSQL_PASSWORD: password # votre mot de passe
+
+  # `webserver` service provides Apache + PHP
+  webserver:
+    container_name : kanban_server_prod
+    # Use custom image based on php-apache official image
+    build:
+      dockerfile: Dockerfile.prod
+    # Run the services as the same user as the host's one, or as user with uid 1000
+    user: "${UID:-1001}:${GID:-1001}"
+    # Expose HTTP/S ports
+    ports:
+      - "8660:80"
+    working_dir: /var/www/html # chemin virtuel pointant vers le container déployé
+    sysctls:
+      # Allow OS to bind 80 port to unprivileged (eg. non-root) users
+      - net.ipv4.ip_unprivileged_port_start=0
