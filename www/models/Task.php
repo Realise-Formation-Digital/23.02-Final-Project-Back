@@ -471,7 +471,7 @@ class Task extends Database
             $stmt->execute([$id]);
             return ["message" => "La tache a été correctement supprimée"];
         } catch (Exception $e) {
-            throw $e;
+            throw new Exception($e->getMessage(), 500);
         }
     }
 }

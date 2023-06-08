@@ -394,12 +394,12 @@ class Project extends Database
          throw new Exception($e->getMessage(), 500);
       }
    }
-   }
+   
 
     /**
      * Delete project by id
      *
-     * @param $id
+     * @param int $id
      * @return string[]
      * @throws Exception
      */
@@ -422,9 +422,9 @@ class Project extends Database
             properties: [
                 new OA\Property(property: "message", type: "string", example: "Le projet a bien été supprimé")
             ]
-        )
+            )
     )]
-   public function delete($id)
+    public function delete($id)
    {
       try {
          // TESTS IF THE PROJECT EXISTS IN THE DATABASE
@@ -432,7 +432,6 @@ class Project extends Database
 
          $stmt = $this->pdo->prepare("DELETE FROM project WHERE id=?");
          $stmt->execute([$id]);
-
          return ["message" => "Le projet a bien été supprimé"];
       } catch (Exception $e) {
          throw new Exception($e->getMessage(), 500);
@@ -464,3 +463,4 @@ class Project extends Database
       }
    }
 }
+
