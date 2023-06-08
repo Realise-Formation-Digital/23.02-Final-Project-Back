@@ -280,18 +280,18 @@ class Project extends Database
             //SET all attributes class 
             $projects = $stmtGetProjects->fetchAll(PDO::FETCH_CLASS, "App\models\Project");
 
-            //loops through project table and GET users's ids for each project
-            foreach ($projects as $project){
-               //obtain project and users ids
-               $users = $project->getUsersByProjectId($project->getId());
-               //add object user to project
-               $project->setCopilList($users);
-            }
-            return $projects;
-        } catch (Exception $e) {
-            throw new Exception($e);
-        }
-    }
+         //loops through project table and GET users's ids for each project
+         foreach ($projects as $project) {
+            //obtain project and users ids
+            $users = $project->getUsersByProjectId($project->getId());
+            //add object user to project
+            $project->setCopilList($users);
+         }
+         return $projects;
+      } catch (Exception $e) {
+         throw new Exception($e);
+      }
+   }
 
 
     /**
@@ -377,7 +377,7 @@ class Project extends Database
       }
    }
 
-   private function getUsersByProjectId(int $projectId): array
+   public function getUsersByProjectId(int $projectId): array
    {
       // get users (= copil list) from project
       $stmt = $this->pdo->prepare('SELECT user.id, user.last_name, user.first_name, user.image FROM project_user JOIN user ON project_user.user_id = user.id WHERE project_user.project_id = :project_id');

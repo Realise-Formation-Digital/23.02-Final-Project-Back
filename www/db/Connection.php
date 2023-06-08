@@ -1,11 +1,11 @@
 <?php
-
 namespace App\db;
 
 use Exception;
 use PDO;
+use Dotenv;
 
-require_once("../config.php");
+Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/../')->load();
 
 class Connection
 {
@@ -27,9 +27,9 @@ class Connection
         if (is_null(self::$connection)) {
             try {
                 self::$connection = new PDO(
-                    "mysql:host=" . HOST_NAME . ";dbname=" . DB_NAME . ";charset=utf8",
-                    USER_NAME,
-                    PASSWORD
+                    "mysql:host=" . getenv('HOST_NAME') . ";dbname=" . getenv('DB_NAME') . ";charset=utf8",
+                    getenv('USER_NAME'),
+                    getenv('PASSWORD')
                 );
             } catch (Exception $e) {
                 throw new Exception("Erreur de connexion à la base de données: " . $e->getMessage());
