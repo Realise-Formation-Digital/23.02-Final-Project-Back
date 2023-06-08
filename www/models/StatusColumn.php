@@ -3,8 +3,19 @@
 namespace App\models;
 
 use AllowDynamicProperties;
+use OpenApi\Attributes as OA;
+
 
 #[AllowDynamicProperties]
+#[OA\Schema(
+    schema: "StatusColumn",
+    properties: [
+        new OA\Property(property: "id", type: "integer"),
+        new OA\Property(property: "title", type: "string"),
+        new OA\Property(property: "position", type: "integer"),
+        new OA\Property(property: "tasks", type: "array", items: new OA\Items("#/components/schemas/Task"))
+    ]
+)]
 class StatusColumn extends Database
 {
     private ?int $id;

@@ -5,8 +5,18 @@ namespace App\models;
 use AllowDynamicProperties;
 use Exception;
 use PDO;
+use OpenApi\Attributes as OA;
 
 #[AllowDynamicProperties]
+#[OA\Schema(
+    schema: "User",
+    properties: [
+        new OA\Property(property: "id", type: "integer"),
+        new OA\Property(property: "first_name", type: "string"),
+        new OA\Property(property: "last_name", type: "string"),
+        new OA\Property(property: "image", type: "string")
+    ]
+)]
 class User extends Database
 {
    protected int $id;
@@ -56,8 +66,26 @@ class User extends Database
       $this->image = $img;
    }
 
-   // SEARCH ALL FUNCTION -----
-   public function search_users(): array
+    /**
+     * Get all users
+     *
+     * @return array
+     * @throws Exception
+     */
+    #[OA\Get(
+        path: '/users',
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Get all users',
+        content: new OA\JsonContent(
+            type: "array",
+            items: new OA\Items(
+                ref: '#/components/schemas/User',
+            )
+        )
+    )]
+    public function search_users(): array
    {
       try {
          // prepare statement TO GET THE USERS FROM DATABASE ORDERED BY LAST NAME AND FIRST NAME
