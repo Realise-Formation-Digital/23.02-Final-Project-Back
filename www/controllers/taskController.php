@@ -30,9 +30,14 @@ function create(stdClass $body): array
         throw new Exception("La tache doit être attribué à quelqu'un.", 400);
     }
 
+   // date(format,timestamp)
+//    echo "Today is " . date("Y/m/d") . "<br>";
+
+
+
     //StartDate must be previous to EndDate, if yes set date
     if ($body->getStartDate & ->getEndDate) {
-    start_date<end_date
+    $this=start_date<$this=end_date
     } else {
     throw new Exception("La date de début de la tâche doit précéder la date de fin.", 400);
     }
