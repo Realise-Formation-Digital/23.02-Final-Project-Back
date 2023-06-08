@@ -29,18 +29,15 @@ function create(stdClass $body): array
     if (empty($body->pilot)) {
         throw new Exception("La tache doit être attribué à quelqu'un.", 400);
     }
-
-   //date(format,timestamp)
-   //echo "Today is " . date("Y/m/d") . "<br>";
-
-
-    $checkStartDate->getStartDate();
-    $checkEndDate->getEndDate();
+    $checkStartDate->setStartDate();
+    $checkEndDate->setEndDate();
     //StartDate must be previous to EndDate, if yes set date
-    if ($body->$checkStartDate & ->$checkEndDate){
+    if ($body($checkStartDate,$checkEndDate)){
     $checkStartDate<$checkEndDate;
+    
     return ("message les dates selectionnées ont bien été crées")
-    } else {
+    }
+     else {
     throw new Exception("La date de début de la tâche doit précéder la date de fin.", 400);
     }
 
