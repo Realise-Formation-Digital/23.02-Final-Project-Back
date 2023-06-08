@@ -35,6 +35,7 @@ function serializeTask(Task $task): array
  */
 function deserializeTask(stdClass $body): Task
 {
+
     $task = new Task();
 
     if (!empty($body->title)) {
@@ -57,18 +58,23 @@ function deserializeTask(stdClass $body): Task
         throw new Exception("La description ne peut pas être nulle.", 400);
     }
 
-    if (!empty($body->start_date)) {
-        $task->setStartDate($body->start_date);
+    $result = checkOrderDate($body->start_date, $body->end_date);
+    if(!$result){
+    throw new Exception ("La date de début de la tâche doit précéder la date de fin.");
+    }
 
+    if (!empty($body->start_date)) {
         test_date($body->start_date);
+        $task->setStartDate($body->start_date);
     } else {
         throw new Exception("La date de début ne peut pas être nulle.", 400);
     }
 
     if (!empty($body->end_date)) {
+        test_date($body->end_date);
         $task->setEndDate($body->end_date);
 
-        test_date($body->end_date);
+        
     } else {
         throw new Exception("La date de fin ne peut pas être nulle.", 400);
     }
@@ -98,4 +104,12 @@ function test_date(string $date): void
     if (date($format, strtotime($date)) != date($date)) {
         throw new Exception("La date doit être valide et au format YYYY-MM-DD. Exemple: 2023-06-05", 400);
     }
+}
+function checkOrderDate($starDate, $endDate){
+if($starDate<$endDate){
+    return true;
+}
+else{
+    return false;
+}
 }
