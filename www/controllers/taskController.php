@@ -29,10 +29,16 @@ function create(stdClass $body): array
     if (empty($body->pilot)) {
         throw new Exception("La tache doit être attribué à quelqu'un.", 400);
     }
+
+    //StartDate must be previous to EndDate, if yes set date
+    if ($body->getStartDate & ->getEndDate) {
+    start_date<end_date
+    } else {
+    throw new Exception("La date de début de la tâche doit précéder la date de fin.", 400);
+    }
     $task = $task->create($task, $body->project_id, $body->pilot);
     return serializeTask($task);
 }
-
 
 /**
  * update une tache
