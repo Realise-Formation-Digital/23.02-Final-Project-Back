@@ -73,7 +73,11 @@ function deserializeProject(stdClass $body): Project
 
     // IF THE COPIL LIST IS EMPTY, THROW AN ERROR
     if (!empty($body->copil_list)) {
-        $project->setCopilList($body->copil_list);
+        if ($project->arrayHasOnlyInts($body->copil_list)) {
+            $project->setCopilList($body->copil_list);
+        } else {
+            throw new Exception("La liste CoPil doit être des nombres.", 400);
+        }
     } else {
         throw new Exception("La liste CoPil est obligatoire.", 400);
     }
