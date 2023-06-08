@@ -29,13 +29,12 @@ function create(stdClass $body): array
     if (empty($body->pilot)) {
         throw new Exception("La tache doit être attribué à quelqu'un.", 400);
     }
-    $checkStartDate->setStartDate();
-    $checkEndDate->setEndDate();
+    $checkStartDate=$task->setStartDate();
+    $checkEndDate=$task->setEndDate();
     //StartDate must be previous to EndDate, if yes set date
     if ($body($checkStartDate,$checkEndDate)){
     $checkStartDate<$checkEndDate;
-    
-    return ("message les dates selectionnées ont bien été crées")
+    return ("message les dates selectionnées ont bien été crées");
     }
      else {
     throw new Exception("La date de début de la tâche doit précéder la date de fin.", 400);
