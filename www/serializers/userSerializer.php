@@ -14,11 +14,12 @@ function serializeUsersList(array $users): array
    foreach ($users as $u) {
       $user_tab[] = serializeUser($u);
    }
+
    return $user_tab;
 }
 
 /**
- * serializeOneUser
+ * serializeUser
  *
  * @param  Class $user
  * @return array
