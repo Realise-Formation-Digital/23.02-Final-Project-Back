@@ -9,13 +9,27 @@ use PDO;
 use OpenApi\Attributes as OA;
 
 #[AllowDynamicProperties]
-#[OA\Schema()]
+#[OA\Schema(
+    schema: "Project",
+    properties: [
+        new OA\Property(property: "id", type: "integer"),
+        new OA\Property(property: "title", type: "string"),
+        new OA\Property(property: "copil_list", type: "array", items: new OA\Items("#/components/schemas/User"))
+    ]
+)]
+#[OA\Schema(
+    schema: "Project_By_Id",
+    properties: [
+        new OA\Property(property: "id", type: "integer"),
+        new OA\Property(property: "title", type: "string"),
+        new OA\Property(property: "status_columns", type: "array", items: new OA\Items("#/components/schemas/StatusColumn")),
+        new OA\Property(property: "copil_list", type: "array", items: new OA\Items("#/components/schemas/User"))
+    ]
+)]
 class Project extends Database
 {
-   #[OA\Property(type: "integer")]
    private ?int $id;
 
-   #[OA\Property(type: "string")]
    private string $title;
 
    private string $status = "inProgress";
@@ -104,13 +118,13 @@ class Project extends Database
       $this->copil_list = $copil_list;
    }
 
-   /**
-    * Method which read a project with status columns, copil list and tasks
-    *
-    * @param int $id
-    * @return Project
-    * @throws Exception
-    */
+    /**
+     * Read a project with status columns, copil list and tasks
+     *
+     * @param int $id
+     * @return Project
+     * @throws Exception
+     */
     #[OA\Get(
         path: '/projects/{id}',
     )]
@@ -127,7 +141,7 @@ class Project extends Database
         response: 200,
         description: 'Get project by id',
         content: new OA\JsonContent(
-            ref: '#/components/schemas/Project'
+            ref: '#/components/schemas/Project_By_Id'
         )
     )]
    public function read(int $id): Project
@@ -169,10 +183,39 @@ class Project extends Database
       }
    }
 
-   /**
-    * arguments: variable class type Project
-    * returns an element type project
-    */
+    /**
+     * Create project
+     *
+     * @param Project $prjct
+     * @return Project
+     * @throws Exception
+     */
+    #[OA\Post(
+        path: '/projects',
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: "title",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "copil_list",
+                    type: "array",
+                    items: new OA\Items(type: "integer")
+                )
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Create project',
+        content: new OA\JsonContent(
+            ref: '#/components/schemas/Project'
+        )
+    )]
    public function create(Project $prjct): Project
    {
       try {
@@ -211,11 +254,22 @@ class Project extends Database
    }
 
 
-
     /**
-     * Method that get all Projects
-     * 
+     * Get all projects
+     *
+     * @return array
+     * @throws Exception
      */
+    #[OA\Get(
+        path: '/projects',
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Get project by id',
+        content: new OA\JsonContent(
+            ref: '#/components/schemas/Project'
+        )
+    )]
     public function search(): array
     {
         try {
@@ -240,21 +294,52 @@ class Project extends Database
     }
 
 
-
-   /**
-    * Method which update project, persists in DB and return project object
-    *
-    * @param int $id
-    * @param Project $project
-    * @param array $copil_lis
-    * @return Project
-    * @throws Exception
-    */
+    /**
+     * Update project by id
+     *
+     * @param int $id
+     * @param Project $project
+     * @return Project
+     * @throws Exception
+     */
     #[OA\Put(
-        path: '/projects/:id',
-        responses: [
-            new OA\Response(response: 200, description: 'Update project by id'),
-        ]
+        path: '/projects/{id}',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: "Project id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(
+            type: "integer"
+        )
+    )]
+    #[OA\RequestBody(
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: "title",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "status",
+                    type: "string",
+                ),
+                new OA\Property(
+                    property: "copil_list",
+                    type: "array",
+                    items: new OA\Items(type: "integer")
+                )
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Update project by id',
+        content: new OA\JsonContent(
+            ref: '#/components/schemas/Project'
+        )
     )]
    public function update(int $id, Project $project): Project
    {
@@ -302,6 +387,34 @@ class Project extends Database
       return $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
    }
 
+    /**
+     * Delete project by id
+     *
+     * @param $id
+     * @return string[]
+     * @throws Exception
+     */
+    #[OA\Delete(
+        path: '/projects/{id}',
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: "Project id",
+        in: "path",
+        required: true,
+        schema: new OA\Schema(
+            type: "integer"
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Delete project by id',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: "message", type: "string", example: "Le projet a bien été supprimé")
+            ]
+        )
+    )]
    public function delete($id)
    {
       try {

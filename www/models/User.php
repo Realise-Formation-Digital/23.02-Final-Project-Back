@@ -5,8 +5,18 @@ namespace App\models;
 use AllowDynamicProperties;
 use Exception;
 use PDO;
+use OpenApi\Attributes as OA;
 
 #[AllowDynamicProperties]
+#[OA\Schema(
+    schema: "User",
+    properties: [
+        new OA\Property(property: "id", type: "integer"),
+        new OA\Property(property: "first_name", type: "string"),
+        new OA\Property(property: "last_name", type: "string"),
+        new OA\Property(property: "image", type: "string")
+    ]
+)]
 class User extends Database
 {
    protected int $id;

@@ -5,8 +5,21 @@ namespace App\models;
 use AllowDynamicProperties;
 use Exception;
 use PDO;
+use OpenApi\Attributes as OA;
 
 #[AllowDynamicProperties]
+#[OA\Schema(
+    schema: "Task",
+    properties: [
+        new OA\Property(property: "id", type: "integer"),
+        new OA\Property(property: "title", type: "string"),
+        new OA\Property(property: "description", type: "string"),
+        new OA\Property(property: "start_date", type: "date"),
+        new OA\Property(property: "end_date", type: "date"),
+        new OA\Property(property: "pilot", ref: "#/components/schemas/User"),
+        new OA\Property(property: "sector", type: "string")
+    ]
+)]
 class Task extends Database
 {
     private ?int $id;

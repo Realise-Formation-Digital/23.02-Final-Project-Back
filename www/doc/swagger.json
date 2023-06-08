@@ -16,7 +16,7 @@
     "paths": {
         "/projects/{id}": {
             "get": {
-                "summary": "Method which read a project with status columns, copil list and tasks",
+                "summary": "Read a project with status columns, copil list and tasks",
                 "operationId": "31501aca4bab71646d0fbc6bdbed332d",
                 "parameters": [
                     {
@@ -35,7 +35,91 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "$ref": "#/components/schemas/Project_By_Id"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update project by id",
+                "operationId": "a70be141f584acba7517ca0f3c367df1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Project id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string"
+                                    },
+                                    "copil_list": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Update project by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                                     "$ref": "#/components/schemas/Project"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete project by id",
+                "operationId": "79ca50397109999e05c54efb9ee0195a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Project id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete project by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Le projet a bien été supprimé"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -43,13 +127,57 @@
                 }
             }
         },
-        "/projects/:id": {
-            "put": {
-                "summary": "Method which update project, persists in DB and return project object",
-                "operationId": "1b633953412575152d8f875eb2121134",
+        "/projects": {
+            "get": {
+                "summary": "Get all projects",
+                "operationId": "1569ab001ca1f74564f8b14dea65f88f",
                 "responses": {
                     "200": {
-                        "description": "Update project by id"
+                        "description": "Get project by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Project"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create project",
+                "operationId": "a49ffec37d2f29e967756e32d15562df",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "copil_list": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Create project",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Project"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -63,6 +191,100 @@
                         "type": "integer"
                     },
                     "title": {
+                        "type": "string"
+                    },
+                    "copil_list": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/User"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Project_By_Id": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "status_columns": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StatusColumn"
+                        }
+                    },
+                    "copil_list": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/User"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "StatusColumn": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "tasks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Task"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Task": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "pilot": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "sector": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "image": {
                         "type": "string"
                     }
                 },
