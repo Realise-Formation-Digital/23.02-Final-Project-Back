@@ -32,7 +32,7 @@ class Task extends Database
 
     private string $end_date;
 
-    private ?User $pilot;
+    private ?User $pilot = null;
 
     private ?string $sector;
 
@@ -119,7 +119,7 @@ class Task extends Database
     /**
      * @return User
      */
-    public function getPilot(): User
+    public function getPilot(): ?User
     {
         return $this->pilot;
     }
@@ -127,7 +127,7 @@ class Task extends Database
     /**
      * @param User $pilot
      */
-    public function setPilot(User $pilot): void
+    public function setPilot(?User $pilot)
     {
         $this->pilot = $pilot;
     }
