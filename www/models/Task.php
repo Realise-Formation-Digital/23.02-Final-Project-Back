@@ -22,19 +22,19 @@ use OpenApi\Attributes as OA;
 )]
 class Task extends Database
 {
-    private ?int $id;
+    private ?int $id = null;
 
-    private string $title;
+    private string $title = '';
 
-    private string $description;
+    private string $description = '';
 
-    private string $start_date;
+    private string $start_date = '';
 
-    private string $end_date;
+    private string $end_date = '';
 
     private ?User $pilot = null;
 
-    private ?string $sector;
+    private ?string $sector = null;
 
     /**
      * @return int|null
