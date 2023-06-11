@@ -32,7 +32,7 @@ class Task extends Database
 
     private string $end_date;
 
-    private User $pilot;
+    private ?User $pilot;
 
     private ?string $sector;
 
