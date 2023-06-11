@@ -36,6 +36,11 @@ class Task extends Database
 
     private ?string $sector = null;
 
+    public function __construct(?User $pilot = null)
+    {
+        $this->pilot = $pilot;
+    }
+
     /**
      * @return int|null
      */
