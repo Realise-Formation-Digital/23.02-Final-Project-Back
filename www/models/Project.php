@@ -228,6 +228,9 @@ class Project extends Database
          // COPIL LIST AS ARRAY OF INTEGER
          $copil = $prjct->getCopilList();
 
+         // test if title is unique
+         $this->testProjectByTitle($prjct->getTitle());
+
          // INSERTION OF PROJECT INTO THE DATABASE
          $stmt = $this->pdo->prepare("INSERT INTO project (title, status) VALUES (:title, :status)");
          $stmt->execute([
@@ -356,6 +359,9 @@ class Project extends Database
          // TESTS IF THE PROJECT EXISTS IN THE DATABASE
          $this->getProjectById($id);
 
+         // test if title is unique
+         $this->testProjectByTitle($project->getTitle());
+
          $this->setId($id);
          $stmtUpdate = $this->pdo->prepare("UPDATE project SET title= :title, status= :status WHERE id= :id");
          $stmtUpdate->execute([
@@ -468,4 +474,29 @@ class Project extends Database
          throw new Exception($e->getMessage(), 500);
       }
    }
+
+    /**
+     * Test if project title is unique
+     *
+     * @param string $title
+     * @return void
+     * @throws Exception
+     */
+    private function testProjectByTitle(string $title): void
+    {
+        try {
+            // get project
+            $stmt = $this->pdo->prepare('SELECT * FROM project WHERE title = :title');
+            $stmt->execute([
+                'title' => $title
+            ]);
+            $project = $stmt->fetchObject(Project::class);
+
+            if ($project) {
+                throw new Exception("Le projet avec le titre $title existe déjà.", 400);
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), 500);
+        }
+    }
 }
