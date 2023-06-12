@@ -52,6 +52,9 @@ function put(int $id, stdClass $body): array
     return serializeTask($updateTask);
 }
 
+/**
+ * @throws Exception
+ */
 function patch(int $id, stdClass $body)
 {
     $task = new Task();
@@ -59,7 +62,7 @@ function patch(int $id, stdClass $body)
     if (!empty($body->new_status_column_id)) {
         //must be integer, if yes create new status column id
         if (gettype($body->new_status_column_id) == "integer") {
-            $task->patch($id, $body->new_status_column_id);
+            return $task->patch($id, $body->new_status_column_id);
         } else {
             throw new Exception("L'id de la colonne status doit être un nombre entier.", 400);
         }
