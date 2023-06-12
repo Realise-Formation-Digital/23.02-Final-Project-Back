@@ -303,13 +303,7 @@ class Task extends Database
                 $task->setId($id);
 
                 //get pilot
-                $stmt = $this->pdo->prepare('SELECT * FROM user WHERE id = :user_id');
-                $stmt->execute([
-                    'user_id' => $user_id
-                ]);
-
-                //add pilot to task
-                $pilot = $stmt->fetchObject(User::class);
+                $pilot = $this->getPilotById($user_id);
 
                 //add pilot to task
                 $task->setPilot($pilot);
@@ -470,6 +464,21 @@ class Task extends Database
             $stmt = $this->pdo->prepare("DELETE FROM task WHERE id=?");
             $stmt->execute([$id]);
             return ["message" => "La tache a été correctement supprimée"];
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
+
+    public function getPilotById(int $id): User {
+        try {
+            //get pilot
+            $stmt = $this->pdo->prepare('SELECT * FROM user WHERE id = :user_id');
+            $stmt->execute([
+                'user_id' => $id
+            ]);
+
+            //add pilot to task
+            return $stmt->fetchObject(User::class);
         } catch (Exception $e) {
             throw $e;
         }

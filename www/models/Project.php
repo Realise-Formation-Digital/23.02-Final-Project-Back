@@ -172,6 +172,12 @@ class Project extends Database
             ]);
             $tasks = $stmt->fetchAll(PDO::FETCH_CLASS, Task::class);
 
+            // add pilot to task
+            foreach($tasks as $task) {
+                $pilot = new Task();
+                $pilot = $pilot->getPilotById($task->user_id);
+                $task->setPilot($pilot);
+            }
             // add tasks to column
             $status_column->setTasks($tasks);
          }
@@ -393,7 +399,6 @@ class Project extends Database
       } catch (Exception $e) {
          throw new Exception($e->getMessage(), 500);
       }
-   }
    }
 
     /**
