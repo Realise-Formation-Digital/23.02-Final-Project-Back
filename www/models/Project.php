@@ -485,12 +485,13 @@ class Project extends Database
     private function testProjectByTitle(string $title, ?int $id = null): void
     {
         try {
-            // get project
+            //if post, $id is null
             if ($id == null) {
                 $stmt = $this->pdo->prepare('SELECT * FROM project WHERE title = :title');
                 $stmt->execute([
                     'title' => $title
                 ]);
+            // if update, test title without himself
             } else {
                 $stmt = $this->pdo->prepare('SELECT * FROM project WHERE title = :title AND id != :id');
                 $stmt->execute([
