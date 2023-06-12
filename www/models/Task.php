@@ -533,7 +533,7 @@ class Task extends Database
                 throw new Exception("La tâche d'id $id n'existe pas.", 400);
             }
         } catch (Exception $e) {
-            throw new Exception($e->getMessage(), 500);
+            throw $e;
         }
     }
 }

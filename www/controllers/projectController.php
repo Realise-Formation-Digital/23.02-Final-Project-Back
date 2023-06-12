@@ -8,16 +8,21 @@ use App\models\Project;
 
 
 /**
+ * @param int $id
+ * @return array
  * @throws Exception
  */
-function read(int $id)
+function read(int $id): array
 {
     $project = new Project();
     $project = $project->read($id);
     return serializeProjectById($project);
 }
 
-
+/**
+ * @return array
+ * @throws Exception
+ */
 function search(): array {
     $project = new Project();
     $projects = $project->search();
@@ -35,6 +40,7 @@ function search(): array {
 /**
  * argument: request body
  * returns an array
+ * @throws Exception
  */
 function create(stdClass $body): array
 {
@@ -44,11 +50,12 @@ function create(stdClass $body): array
 }
 
 /**
- * update un projet 
+ * update un projet
  *
- * @param  int $id
- * @param  stdClass $body
+ * @param int $id
+ * @param stdClass $body
  * @return array
+ * @throws Exception
  */
 function put(int $id, stdClass $body): array
 {
@@ -57,11 +64,18 @@ function put(int $id, stdClass $body): array
     return serializeProject($updateProject);
 }
 
-function patch(int $id, stdClass $body)
+/**
+ * @throws Exception
+ */
+function patch()
 {
+    throw new Exception("Ce Endpoint n'est pas accessible", 404);
 }
 
 
+/**
+ * @throws Exception
+ */
 function delete(int $id): array
 {
     $project = new Project();

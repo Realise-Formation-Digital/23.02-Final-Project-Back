@@ -95,7 +95,7 @@ class User extends Database
          return $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
       } catch (Exception $e) {
          // send an error for there was an error with the inserted query
-         throw new Exception($e->getMessage(), 500);
+          throw $e;
       }
    }
 }
