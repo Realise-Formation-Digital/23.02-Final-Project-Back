@@ -127,6 +127,7 @@ class Project extends Database
      */
     #[OA\Get(
         path: '/projects/{id}',
+        tags: ['Project']
     )]
     #[OA\Parameter(
         name: 'id',
@@ -198,10 +199,12 @@ class Project extends Database
      */
     #[OA\Post(
         path: '/projects',
+        tags: ['Project']
     )]
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
+            required: ['title', 'copil_list'],
             properties: [
                 new OA\Property(
                     property: "title",
@@ -271,6 +274,7 @@ class Project extends Database
      */
     #[OA\Get(
         path: '/projects',
+        tags: ['Project']
     )]
     #[OA\Response(
         response: 200,
@@ -316,6 +320,7 @@ class Project extends Database
      */
     #[OA\Put(
         path: '/projects/{id}',
+        tags: ['Project']
     )]
     #[OA\Parameter(
         name: 'id',
@@ -329,6 +334,7 @@ class Project extends Database
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
+            required: ['title', 'status', 'copil_list'],
             properties: [
                 new OA\Property(
                     property: "title",
@@ -337,6 +343,7 @@ class Project extends Database
                 new OA\Property(
                     property: "status",
                     type: "string",
+                    enum: ["inProgress", "done"]
                 ),
                 new OA\Property(
                     property: "copil_list",
@@ -421,6 +428,7 @@ class Project extends Database
      */
     #[OA\Delete(
         path: '/projects/{id}',
+        tags: ['Project']
     )]
     #[OA\Parameter(
         name: 'id',
