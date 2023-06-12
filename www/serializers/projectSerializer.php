@@ -91,7 +91,7 @@ function deserializeProject(stdClass $body): Project
  * @param  array $list
  * @return bool
  */
-function arrayHasOnlyInts(array $list): bool
+function arrayHasOnlyInts(array $list): int
 {
     $nonints = preg_grep('/\D/', $list); // returns array of elements with non-ints
     return (count($nonints) == 0); // if array has 0 elements, there's no non-ints
