@@ -17,7 +17,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: "start_date", type: "date"),
         new OA\Property(property: "end_date", type: "date"),
         new OA\Property(property: "pilot", ref: "#/components/schemas/User"),
-        new OA\Property(property: "sector", type: "string")
+        new OA\Property(property: "sector", type: "string", enum: ["blanchisserie", "horlogerie", "jardinerie", "nettoyage", "administration", "informatique"])
     ]
 )]
 class Task extends Database
@@ -171,6 +171,7 @@ class Task extends Database
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
+            required: ['new_status_column_id'],
             properties: [
                 new OA\Property(
                     property: "new_status_column_id",
@@ -259,6 +260,7 @@ class Task extends Database
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
+            required: ['title', 'description', "start_date", "end_date", "pilot", "project_id"],
             properties: [
                 new OA\Property(
                     property: "title",
@@ -283,6 +285,7 @@ class Task extends Database
                 new OA\Property(
                     property: "sector",
                     type: "string",
+                    enum: ["blanchisserie", "horlogerie", "jardinerie", "nettoyage", "administration", "informatique"]
                 ),
                 new OA\Property(
                     property: "project_id",
@@ -374,6 +377,7 @@ class Task extends Database
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
+            required: ['title', 'description', "start_date", "end_date", "pilot", "project_id"],
             properties: [
                 new OA\Property(
                     property: "title",
@@ -398,6 +402,7 @@ class Task extends Database
                 new OA\Property(
                     property: "sector",
                     type: "string",
+                    enum: ["blanchisserie", "horlogerie", "jardinerie", "nettoyage", "administration", "informatique"]
                 ),
                 new OA\Property(
                     property: "project_id",

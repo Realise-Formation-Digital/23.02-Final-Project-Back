@@ -204,6 +204,7 @@ class Project extends Database
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
+            required: ['title', 'copil_list'],
             properties: [
                 new OA\Property(
                     property: "title",
@@ -333,6 +334,7 @@ class Project extends Database
     #[OA\RequestBody(
         required: true,
         content: new OA\JsonContent(
+            required: ['title', 'status', 'copil_list'],
             properties: [
                 new OA\Property(
                     property: "title",
@@ -341,6 +343,7 @@ class Project extends Database
                 new OA\Property(
                     property: "status",
                     type: "string",
+                    enum: ["inProgress", "done"]
                 ),
                 new OA\Property(
                     property: "copil_list",
