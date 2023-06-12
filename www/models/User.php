@@ -74,6 +74,7 @@ class User extends Database
      */
     #[OA\Get(
         path: '/users',
+        tags: ['User']
     )]
     #[OA\Response(
         response: 200,

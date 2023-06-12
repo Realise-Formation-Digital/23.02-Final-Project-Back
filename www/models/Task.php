@@ -157,6 +157,7 @@ class Task extends Database
      */
     #[OA\Patch(
         path: '/tasks/{id}',
+        tags: ['Task']
     )]
     #[OA\Parameter(
         name: 'id',
@@ -253,6 +254,7 @@ class Task extends Database
      */
     #[OA\Post(
         path: '/tasks',
+        tags: ['Task']
     )]
     #[OA\RequestBody(
         required: true,
@@ -358,6 +360,7 @@ class Task extends Database
      */
     #[OA\Put(
         path: '/tasks/{id}',
+        tags: ['Task']
     )]
     #[OA\Parameter(
         name: 'id',
@@ -471,6 +474,7 @@ class Task extends Database
      */
     #[OA\Delete(
         path: '/tasks/{id}',
+        tags: ['Task']
     )]
     #[OA\Parameter(
         name: 'id',

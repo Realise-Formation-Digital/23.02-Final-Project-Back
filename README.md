@@ -31,5 +31,10 @@ http://localhost:8660/doc
 
     > composer dump-autoload
 
-5. Pour arrêter les containers, lancer la commande:
+5. Mettre à jour Swagger
+   > cd www
+
+   > ./vendor/bin/openapi --format json --output ./doc/swagger.json ./doc/Swagger.php ./models
+
+6. Pour arrêter les containers, lancer la commande:
    > docker-compose down

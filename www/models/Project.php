@@ -127,6 +127,7 @@ class Project extends Database
      */
     #[OA\Get(
         path: '/projects/{id}',
+        tags: ['Project']
     )]
     #[OA\Parameter(
         name: 'id',
@@ -198,6 +199,7 @@ class Project extends Database
      */
     #[OA\Post(
         path: '/projects',
+        tags: ['Project']
     )]
     #[OA\RequestBody(
         required: true,
@@ -271,6 +273,7 @@ class Project extends Database
      */
     #[OA\Get(
         path: '/projects',
+        tags: ['Project']
     )]
     #[OA\Response(
         response: 200,
@@ -316,6 +319,7 @@ class Project extends Database
      */
     #[OA\Put(
         path: '/projects/{id}',
+        tags: ['Project']
     )]
     #[OA\Parameter(
         name: 'id',
@@ -421,6 +425,7 @@ class Project extends Database
      */
     #[OA\Delete(
         path: '/projects/{id}',
+        tags: ['Project']
     )]
     #[OA\Parameter(
         name: 'id',

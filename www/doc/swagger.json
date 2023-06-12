@@ -16,6 +16,9 @@
     "paths": {
         "/projects/{id}": {
             "get": {
+                "tags": [
+                    "Project"
+                ],
                 "summary": "Read a project with status columns, copil list and tasks",
                 "operationId": "31501aca4bab71646d0fbc6bdbed332d",
                 "parameters": [
@@ -43,6 +46,9 @@
                 }
             },
             "put": {
+                "tags": [
+                    "Project"
+                ],
                 "summary": "Update project by id",
                 "operationId": "a70be141f584acba7517ca0f3c367df1",
                 "parameters": [
@@ -94,6 +100,9 @@
                 }
             },
             "delete": {
+                "tags": [
+                    "Project"
+                ],
                 "summary": "Delete project by id",
                 "operationId": "79ca50397109999e05c54efb9ee0195a",
                 "parameters": [
@@ -129,6 +138,9 @@
         },
         "/projects": {
             "get": {
+                "tags": [
+                    "Project"
+                ],
                 "summary": "Get all projects",
                 "operationId": "1569ab001ca1f74564f8b14dea65f88f",
                 "responses": {
@@ -148,6 +160,9 @@
                 }
             },
             "post": {
+                "tags": [
+                    "Project"
+                ],
                 "summary": "Create project",
                 "operationId": "a49ffec37d2f29e967756e32d15562df",
                 "requestBody": {
@@ -187,6 +202,9 @@
         },
         "/tasks/{id}": {
             "put": {
+                "tags": [
+                    "Task"
+                ],
                 "summary": "Update task",
                 "operationId": "17d598a41b3aad037554eef40d373f06",
                 "parameters": [
@@ -249,6 +267,9 @@
                 }
             },
             "delete": {
+                "tags": [
+                    "Task"
+                ],
                 "summary": "Delete task",
                 "operationId": "bb675c82e6a2a5ba994671bcdc94f5e1",
                 "parameters": [
@@ -282,6 +303,9 @@
                 }
             },
             "patch": {
+                "tags": [
+                    "Task"
+                ],
                 "summary": "Patch task by id (change task column)",
                 "operationId": "34b012df462c6a228484d974c4723105",
                 "parameters": [
@@ -332,6 +356,9 @@
         },
         "/tasks": {
             "post": {
+                "tags": [
+                    "Task"
+                ],
                 "summary": "Create a task",
                 "operationId": "b95eeea4856a8ad6a9f040c90db71a30",
                 "requestBody": {
@@ -385,6 +412,9 @@
         },
         "/users": {
             "get": {
+                "tags": [
+                    "User"
+                ],
                 "summary": "Get all users",
                 "operationId": "0829ffd6f32e36159d9a194a6672b340",
                 "responses": {
