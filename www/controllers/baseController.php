@@ -32,12 +32,15 @@ try {
             }
             break;
         case 'POST':
+            testBodyAsObject($body);
             $result = create($body);
             break;
         case 'PUT':
+            testBodyAsObject($body);
             $result = put($id, $body);
             break;
         case 'PATCH':
+            testBodyAsObject($body);
             $result = patch($id, $body);
             break;
         case 'DELETE':
@@ -57,4 +60,18 @@ try {
 
     http_response_code($codeError);
     echo json_encode(['message' => $e->getMessage()]);
+}
+
+/**
+ * @throws Exception
+ */
+function testBodyAsObject($body): void
+{
+    if (json_last_error() != JSON_ERROR_NONE) {
+        throw new Exception("Le body de la requête est mal formé.", 400);
+    }
+
+    if (gettype($body) != "object") {
+        throw new Exception("Le body doit être vide.", 400);
+    }
 }
