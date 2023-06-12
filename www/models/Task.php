@@ -190,15 +190,43 @@ class Task extends Database
     public function patch(int $id, int $status_column_id)
     {
         try {
+            // test if id exists
+            $this->testIfTaskExists($id);
+
             /*fetch and map id from task*/
             $stmtFetch = $this->pdo->prepare("SELECT * FROM task WHERE id=:id");
             $stmtFetch->execute([
                 "id" => $id,
             ]);
             $task = $stmtFetch->fetch(PDO::FETCH_OBJ);
-            //error message if id doesn't exist
-            if (!$task == true) {
-                throw new Exception('Cette tache nexiste pas', 400);
+
+            // test if new column not same tha old
+            if ($task->status_column_id == $status_column_id) {
+                throw new Exception("Vous êtes resté dans la même colonne.", 400);
+            }
+
+            // test if new status column_id exists and has  has same project
+            $stmtFetch = $this->pdo->prepare("SELECT * FROM status_column WHERE id=:status_column_id");
+            $stmtFetch->execute([
+                "status_column_id" => $status_column_id,
+            ]);
+            $new_column = $stmtFetch->fetch(PDO::FETCH_OBJ);
+
+            //test if column exists
+            if(!$new_column) {
+                throw new Exception("La nouvelle colonne de statut d'id $status_column_id n'existe pas.", 400);
+            }
+
+            // get project id from old column
+            $stmtFetch = $this->pdo->prepare("SELECT project_id FROM status_column WHERE id=:status_column_id");
+            $stmtFetch->execute([
+                "status_column_id" => $task->status_column_id,
+            ]);
+            $old_column = $stmtFetch->fetch(PDO::FETCH_OBJ);
+
+            //test if column is in same project
+            if ($new_column->project_id != $old_column->project_id) {
+                throw new Exception("La nouvelle colonne n'appartient pas au même projet que l'ancienne colonne.", 400);
             }
 
             $stmtUpdate = $this->pdo->prepare("UPDATE task SET status_column_id=:status_column_id WHERE id = :id");
@@ -206,6 +234,8 @@ class Task extends Database
                 "id" => $id,
                 "status_column_id" => $status_column_id
             ]);
+
+            return ["message" => "La tâche d'id $id a bien migré vers la colonne d'id $status_column_id"];
         } catch (Exception $e) {
             throw $e;
         }
