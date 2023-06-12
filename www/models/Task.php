@@ -383,6 +383,9 @@ class Task extends Database
     public function update(int $id, Task $task, int $project_id, int $user_id): Task
     {
         try {
+            //test if task exists
+            $this->testIfTaskExists($id);
+
             // GET THE LIST OF USERS WHO WERE ASSIGNED TO THE PROJECT WE'RE TRYING TO ADD THE TASK TO
             $associatedProject = new Project;
             $projectCopil[] = $associatedProject->getUsersByProjectId($project_id);
@@ -460,6 +463,8 @@ class Task extends Database
     public function delete($id)
     {
         try {
+            //test if task exists
+            $this->testIfTaskExists($id);
 
             $stmt = $this->pdo->prepare("DELETE FROM task WHERE id=?");
             $stmt->execute([$id]);
@@ -481,6 +486,24 @@ class Task extends Database
             return $stmt->fetchObject(User::class);
         } catch (Exception $e) {
             throw $e;
+        }
+    }
+
+    private function testIfTaskExists(int $id): void
+    {
+        try {
+            // get task
+            $stmt = $this->pdo->prepare('SELECT * FROM task WHERE id = :id');
+            $stmt->execute([
+                'id' => $id
+            ]);
+            $task = $stmt->fetchObject(Task::class);
+
+            if (!$task) {
+                throw new Exception("La tâche d'id $id n'existe pas.", 400);
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), 500);
         }
     }
 }

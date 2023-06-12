@@ -360,7 +360,7 @@ class Project extends Database
          $this->getProjectById($id);
 
          // test if title is unique
-         $this->testProjectByTitle($project->getTitle());
+         $this->testProjectByTitle($project->getTitle(), $id);
 
          $this->setId($id);
          $stmtUpdate = $this->pdo->prepare("UPDATE project SET title= :title, status= :status WHERE id= :id");
@@ -482,14 +482,24 @@ class Project extends Database
      * @return void
      * @throws Exception
      */
-    private function testProjectByTitle(string $title): void
+    private function testProjectByTitle(string $title, ?int $id = null): void
     {
         try {
-            // get project
-            $stmt = $this->pdo->prepare('SELECT * FROM project WHERE title = :title');
-            $stmt->execute([
-                'title' => $title
-            ]);
+            //if post, $id is null
+            if ($id == null) {
+                $stmt = $this->pdo->prepare('SELECT * FROM project WHERE title = :title');
+                $stmt->execute([
+                    'title' => $title
+                ]);
+            // if update, test title without himself
+            } else {
+                $stmt = $this->pdo->prepare('SELECT * FROM project WHERE title = :title AND id != :id');
+                $stmt->execute([
+                    'title' => $title,
+                    'id' => $id
+                ]);
+            }
+
             $project = $stmt->fetchObject(Project::class);
 
             if ($project) {
