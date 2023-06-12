@@ -185,7 +185,7 @@ class Project extends Database
          $project->setStatusColumns($status_columns);
          return $project;
       } catch (Exception $e) {
-         throw new Exception($e->getMessage(), 500);
+          throw $e;
       }
    }
 
@@ -258,7 +258,7 @@ class Project extends Database
          // returns the last created object
          return $prjct;
       } catch (Exception $e) {
-         throw new Exception($e->getMessage(), 500);
+          throw $e;
       }
    }
 
@@ -301,7 +301,7 @@ class Project extends Database
          }
          return $projects;
       } catch (Exception $e) {
-         throw new Exception($e);
+            throw $e;
       }
    }
 
@@ -388,11 +388,16 @@ class Project extends Database
 
          return $project;
       } catch (Exception $e) {
-         throw new Exception($e->getMessage(), 500);
+          throw $e;
       }
    }
 
-   public function getUsersByProjectId(int $projectId): array
+    /**
+     * @param int $projectId
+     * @return array
+     * @throws Exception
+     */
+    public function getUsersByProjectId(int $projectId): array
    {
       try {
          // get users (= copil list) from project
@@ -403,7 +408,7 @@ class Project extends Database
          
          return $stmt->fetchAll(PDO::FETCH_CLASS, User::class);
       } catch (Exception $e) {
-         throw new Exception($e->getMessage(), 500);
+          throw $e;
       }
    }
 
@@ -446,15 +451,16 @@ class Project extends Database
 
          return ["message" => "Le projet a bien été supprimé"];
       } catch (Exception $e) {
-         throw new Exception($e->getMessage(), 500);
+          throw $e;
       }
    }
 
-   /**
-    * Get one project from the database with the ID inserted
-    * arguments: project ID
-    * returns an element of type Project
-    */
+    /**
+     * Get one project from the database with the ID inserted
+     * arguments: project ID
+     * returns an element of type Project
+     * @throws Exception
+     */
    private function getProjectById(int $id): Project
    {
       try {
@@ -471,7 +477,7 @@ class Project extends Database
 
          return $project;
       } catch (Exception $e) {
-         throw new Exception($e->getMessage(), 500);
+         throw $e;
       }
    }
 
@@ -479,6 +485,7 @@ class Project extends Database
      * Test if project title is unique
      *
      * @param string $title
+     * @param int|null $id
      * @return void
      * @throws Exception
      */
@@ -506,7 +513,7 @@ class Project extends Database
                 throw new Exception("Le projet avec le titre $title existe déjà.", 400);
             }
         } catch (Exception $e) {
-            throw new Exception($e->getMessage(), 500);
+            throw $e;
         }
     }
 }

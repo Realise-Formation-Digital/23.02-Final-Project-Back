@@ -6,16 +6,22 @@ require_once("./baseController.php");
 
 use App\models\User;
 
-function read(int $id)
+
+/**
+ * @throws Exception
+ */
+function read(int $id): array
 {
    throw new Exception("Ce Endpoint n'est pas accessible", 404);
 }
 
 /**
  * Search users in the database and converts it into JSON
- * returns an array 
+ *
+ * @return array
+ * @throws Exception
  */
-function search()
+function search(): array
 {
    $user = new User();
    $user_data = $user->search_users();
@@ -27,23 +33,35 @@ function search()
 }
 
 
+/**
+ * @throws Exception
+ */
 function create(stdClass $body)
 {
    throw new Exception("Ce Endpoint n'est pas accessible", 404);
 }
 
 
+/**
+ * @throws Exception
+ */
 function put(int $id, stdClass $body)
 {
    throw new Exception("Ce Endpoint n'est pas accessible", 404);
 }
 
+/**
+ * @throws Exception
+ */
 function patch(int $id, stdClass $body)
 {
    throw new Exception("Ce Endpoint n'est pas accessible", 404);
 }
 
 
+/**
+ * @throws Exception
+ */
 function delete(int $id)
 {
    throw new Exception("Ce Endpoint n'est pas accessible", 404);

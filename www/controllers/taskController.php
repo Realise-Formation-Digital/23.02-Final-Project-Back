@@ -7,12 +7,18 @@ require_once("./baseController.php");
 use App\models\Task;
 
 
+/**
+ * @throws Exception
+ */
 function read(int $id)
 {
     throw new Exception("Ce Endpoint n'est pas accessible", 404);
 }
 
 
+/**
+ * @throws Exception
+ */
 function search()
 {
     throw new Exception("Ce Endpoint n'est pas accessible", 404);
@@ -39,9 +45,10 @@ function create(stdClass $body): array
 /**
  * update une tache
  *
- * @param  mixed $id
- * @param  stdClass $body
+ * @param int $id
+ * @param stdClass $body
  * @return array
+ * @throws Exception
  */
 function put(int $id, stdClass $body): array
 {
@@ -55,9 +62,12 @@ function put(int $id, stdClass $body): array
 }
 
 /**
+ * @param int $id
+ * @param stdClass $body
+ * @return array
  * @throws Exception
  */
-function patch(int $id, stdClass $body)
+function patch(int $id, stdClass $body): array
 {
     $task = new Task();
     //check if id of body task exist 
@@ -73,7 +83,11 @@ function patch(int $id, stdClass $body)
     }
 }
 
-
+/**
+ * @param int $id
+ * @return array
+ * @throws Exception
+ */
 function delete(int $id): array
 {
     $task = new Task();
