@@ -59,6 +59,7 @@ function put(int $id, stdClass $body): array
 
 function patch(int $id, stdClass $body)
 {
+    throw new Exception("Ce Endpoint n'est pas accessible", 404);
 }
 
 

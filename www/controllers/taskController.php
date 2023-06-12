@@ -9,11 +9,13 @@ use App\models\Task;
 
 function read(int $id)
 {
+    throw new Exception("Ce Endpoint n'est pas accessible", 404);
 }
 
 
 function search()
 {
+    throw new Exception("Ce Endpoint n'est pas accessible", 404);
 }
 
 
