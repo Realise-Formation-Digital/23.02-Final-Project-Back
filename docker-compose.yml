@@ -5,7 +5,7 @@ services:
     container_name: kanban_mariadb
     image: mariadb:latest # version de l'image mysql
     volumes:
-      - ./data_db:/var/lib/mariadb # où seront stockée les données en local
+      - ./data_db:/var/lib/mysql # où seront stockée les données en local
       - ./db:/docker-entrypoint-initdb.d # ajout automatique à la DB des fichiers du dossier db
     environment:
       MYSQL_ROOT_PASSWORD: password # mot de passe root
